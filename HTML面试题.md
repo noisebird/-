@@ -114,8 +114,36 @@ background: linear-gradient(direction, color-stop1, color-stop2, ...);direction�
     scale(2,3);沿着X轴拉伸2倍，沿着Y轴拉伸3倍
     skew(30deg,20deg);沿着x轴倾斜30度，沿着y轴倾斜20度
     matrix();有六个参数，包含旋转，缩放，移动（平移）和倾斜功能。
-    
+
 transform-origin:50% 50%;更改元素的位置
+```
++ CSS3 3D 转换
+    transform:translate3d(xdeg,ydeg,zdeg),translateX(10deg),translateY,translateZ,scale3d(x,y,z),rotate3d()
++ CSS3 过渡 添加某种效果可以从一种样式转变到另一个的时候，无需使用Flash动画或JavaScrip
+```
+    transition:transition-property transition-duration transition-timing-function transition-delay;
+                 应用过度的属性名     多长时间内完成效果         用什么曲线执行        延时几秒执行效果
+```
++ CSS3 动画
+```
+@keyframes规则是创建动画。 @keyframes规则内指定一个CSS样式和动画将逐步从目前的样式更改为新的样式。
+第一种写法：
+    @-webkit-keyframes myfirst
+    {
+        0%   {background: red;}
+        25%  {background: yellow;}
+        50%  {background: blue;}
+        100% {background: green;}
+    }
+第二种写法
+    @-webkit-keyframes myfirst
+    {
+        from {background: red;}
+        to {background: yellow;}
+    }
+调用动画的语法：
+    animation: animation-name animation-duration animation-timing-function animation-delay animation-iteration-count animation-direction animation-play-state
+                    名称             周期             动画的速度曲线          延迟多少秒开始           播放的次数         下一周期是否逆序执行     动画是否正在执行 
 ```
     + 颜色：新增RGBA，HSLA模式
     + 文字阴影（text-shadow、）
