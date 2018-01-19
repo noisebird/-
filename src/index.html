@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="snap">Snap Photo</button>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <div id="charging"></div>
+    <div id="level"></div>
+    <div id="dischargingTime"></div>
+    <button id="fullScreen">触发全屏</button>
+    <button id="exitfullScreen">退出全屏</button>
+</body>
+<script>
+    window.addEventListener("DOMContentLoaded", function() {
+        // 获取元素，创建配置
+        var canvas = document.getElementById("canvas"),
+            context = canvas.getContext("2d"),
+            video = document.getElementById("video"),
+            videoObj = {
+                "video": true
+            },
+            errBack = function(error) {
+                console.log("Video capture error: ", error.code);
+            };
+
+        // 添加视频监听器
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { // 标准的API
+            navigator.getUserMedia(videoObj, function(stream) {
+                video.src = window.URL.createObjectURL(stream);
+                video.play();
+            }, errBack);
+        } else if (navigator.getUserMedia) { // Standard
+            navigator.getUserMedia({
+                video: true
+            }, function(stream) {
+                video.src = stream;
+                video.play();
+            }, errBack);
+        } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
+            navigator.webkitGetUserMedia({
+                video: true
+            }, function(stream) {
+                video.src = window.webkitURL.createObjectURL(stream);
+                video.play();
+            }, errBack);
+        } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
+            navigator.mozGetUserMedia({
+                video: true
+            }, function(stream) {
+                video.src = window.URL.createObjectURL(stream);
+                video.play();
+            }, errBack);
+        };
+
+    }, false);
+    // 显示电池电量的代码
+    function updateBatteryStatus(battery) {
+        document.querySelector('#charging').textContent = battery.charging ? 'charging' : 'not charging';
+        document.querySelector('#level').textContent = battery.level;
+        document.querySelector('#dischargingTime').textContent = battery.chargingTime;
+    }
+
+
+    navigator.getBattery().then(function(battery) {
+        // Update the battery status initially when the promise resolves ...
+        updateBatteryStatus(battery);
+
+        // .. and for any subsequent updates.
+        battery.onchargingchange = function() {
+            updateBatteryStatus(battery);
+        };
+
+        battery.onlevelchange = function() {
+            updateBatteryStatus(battery);
+        };
+
+        battery.ondischargingtimechange = function() {
+            updateBatteryStatus(battery);
+        };
+    })
+
+    function launchIntoFullscreen(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
+
+    function exitFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+
+    // Launch fullscreen for browsers that support it!
+    document.querySelector("#fullScreen").addEventListener("click", function(event) {
+
+        launchIntoFullscreen(document.documentElement); // the whole page
+    }, false)
+    document.querySelector("#exitfullScreen").addEventListener("click", function(event) {
+
+        exitFullscreen(document.documentElement); // the whole page
+    }, false)
+</script>
+
+</html>

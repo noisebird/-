@@ -12,11 +12,11 @@
     空元素：即系没有内容的HTML元素，例如：br、meta、hr、link、input、img
 
 
-### <p style="">3、CSS实现垂直水平居中?</p>
+### 3、CSS实现垂直水平居中?
     position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;
     position:absolute；top:50%;left:50%;margin-left:-100px;margin-top:-100px;
 
-###    4、简述一下src与href的区别?
+### 4、简述一下src与href的区别?
         href 是指向网络资源所在位置，建立和当前元素（锚点）或当前文档（链接）之间的链接，用于超链接。src是指向外部资源的位置，
     指向的内容将会嵌入到文档中当前标签所在位置；在请求src资源时会将其指向的资源下载并应用到文档内，例如js脚本，img图片和frame
     等元素。当浏览器解析到该元素时，会暂停其他资源的下载和处理，直到将该资源加载、编译、执行完毕，图片和框架等元素也如此，类似
@@ -56,7 +56,92 @@
     Opera：以前是presto内核，Opera现已改用Google Chrome的Blink内核
     Chrome：Blink(基于webkit，Google与Opera Software共同开发)
 
-##二、JavaScript部分
+### 10、html5新增的内容有哪些？css3新增的内容有哪些？
+<p style="font-size">(1) CSS3选择器有哪些？</p>
+
+    属性选择器、伪类选择器、伪元素选择器。
+
+<p style="font-size">(2) CSS3新特性有哪些？</p>
+     
+    + 颜色：新增RGBA，HSLA模式
+    + 文字阴影（text-shadow、）
+    + 边框： 圆角（border-radius）边框阴影： box-shadow
+    + 盒子模型：box-sizing
+    + 背景：background-size 设置背景图片的尺寸background-origin 设置背景图片的原点
+    + background-clip 设置背景图片的裁切区域，以”，”分隔可以设置多背景，用于自适应布局
+    + 渐变：linear-gradient、radial-gradient
+    + 过渡：transition，可实现动画
+    + 自定义动画
+    + 在CSS3中唯一引入的伪元素是 ：：select  +
+    + 媒体查询，多栏布局
+    + border-image
+    + 2D转换：transform：translate(x，y) rotate(x，y) skew(x，y) scale(x，y)
+    + 3D转换
+
+<p style="font-size:16px;">(3) HTML5新增的内容有哪些？</p>
+
++ 新的文档类型(New Doctype)  
+```
+HTML5中文档类型直接声明为<!DOCTYPE html>即可，不用像XHTML文档一样需要声明dtd文档类型。  
+```
+
++ 脚本和链接无需type(No More Types for Scripts and Links)
+```
+ <script></script>标签，<link></link>标签可以不用书写type值和rel值
+```
++ 新增了语义化标签
+```
+    <address>: 定义文档作者或拥有者的联系信息
+    <caption>: 定义表格标题。
+    <header>: 定义 section 或 page 的页眉。
+    <footer>: 定义 section 或 page 的页脚。
+    <article>: 定义文章
+    <aside>: 定义页面内容之外的内容。
+    <nav>: 定义导航链接。
+    <section>: 文档中的区段
+    <menu>: 并不是h5定义的标签
+    <datalist>: 定义选项列表。请与 input 元素配合使用该元素，来定义 input 可
+                能的值。datalist 及其选项不会被显示出来，它仅仅是合法的输入值
+                列表。请使用 input 元素的 list 属性指定为datalist元素的id
+                值，即可完成绑定
+```
+
++ 删除了原有的一些标签
+```
+删除<b>,<font>,<frame>,<center>,<big> 等标签
+```   
++ 新增了多媒体标签
+```
+
+不用插件支持也可以播放一些多媒体文件。<audio>,<video>,<canvas>标签。
+音视频标签的几个属性主要有，src,autoplay,loop,controls,preload
+```
+
++ 新增了调用本地摄像头的功能，即getUserMedia API
+```
+特别有趣的一个 API，能够调用电脑的摄像头，结合 <video> 标签和 Canvas 就能在浏览器中拍摄照片了。 未来这个 API将被广泛用来让浏览器和用户之间互动.详细代码见src目录下的index.html
+```
++ Battery API (在网站https://davidwalsh.name/搜索JavaScript Battery API)
+```
+顾名思义，这是一个电池 API ，明显是为移动设备准备的，用于监控电池的状态。能够通过事件监听电池电量的变化，电池的等级、可用时间等状态
+```
++ Link Prefetching API(在网站https://davidwalsh.name/搜索HTML5 Link Prefetching)
+
+```
+    这个链接预取 API 非常有用，让开发者可以控制网页资源在后台安静的预先加载，这样用户在浏览网站或者使用
+Web 应用程序的时候能够有流畅的使用体验。可以预加载整个页面，也可以是单个资源
+<!-- 预加载整个页面 -->
+<link rel="prefetch" href="http://davidwalsh.name/css-enhancements-user-experience" /> 
+<!-- 预加载一张图片 -->
+<link rel="prefetch" href="http://davidwalsh.name/wp-content/themes/walshbook3/images/sprite.png" />
+
+```
++ Fullscreen API(在网站https://davidwalsh.name/搜索 Fullscreen API)
+```
+这个 HTML5 全屏 API 让 Web 开发者可以通过编程控制页面的全屏显示。这个 API 对于 JavaScript 游戏开发特别有用，例如这款单人射击游戏 BananaBread，在全屏状态下玩那是相当酷。
+```
+
+## 二、JavaScript部分
 ###    1.怎样添加、移除、移动、复制、创建和查找节点？
         1）创建新节点
             createDocumentFragment() //创建一个DOM片段
@@ -84,9 +169,10 @@
 ###     11. gulp的工作原理是什么？gulp常用的命令有哪些？
 ###     12. git版本控制工具的工作原理是什么？git常用的一些命令有哪些？git如何用命令解决代码冲突？
 ###     13. js中异步的解决方案有哪些？
-###         generator、async await promise
+    generator、async await promise
 ###     14.  如何解决跨域的问题？
 ###     15. html5新增的内容有哪些？css3新增的内容有哪些？
+    1.新的文档类型  (New Doctype)
 ###     16. scss的常用的语法都有哪些？
 ###     17. react工作的原理，以及react的思想？
 ###     18. ajax是一个单独的模块，知识jquery封装了这个模块而已
