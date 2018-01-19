@@ -112,20 +112,18 @@ HTML5中文档类型直接声明为<!DOCTYPE html>即可，不用像XHTML文档�
 ```   
 + 新增了多媒体标签
 ```
-
 不用插件支持也可以播放一些多媒体文件。<audio>,<video>,<canvas>标签。
 音视频标签的几个属性主要有，src,autoplay,loop,controls,preload
 ```
-
-+ 新增了调用本地摄像头的功能，即getUserMedia API
++ 新增了调用本地摄像头的功能，即getUserMedia API。详细代码见src目录下的index.html
 ```
-特别有趣的一个 API，能够调用电脑的摄像头，结合 <video> 标签和 Canvas 就能在浏览器中拍摄照片了。 未来这个 API将被广泛用来让浏览器和用户之间互动.详细代码见src目录下的index.html
+特别有趣的一个 API，能够调用电脑的摄像头，结合 <video> 标签和 Canvas 就能在浏览器中拍摄照片了。 未来这个 API将被广泛用来让浏览器和用户之间互动.
 ```
 + Battery API (在网站https://davidwalsh.name/搜索JavaScript Battery API)
 ```
 顾名思义，这是一个电池 API ，明显是为移动设备准备的，用于监控电池的状态。能够通过事件监听电池电量的变化，电池的等级、可用时间等状态
 ```
-+ Link Prefetching API(在网站https://davidwalsh.name/搜索HTML5 Link Prefetching)
++ Link Prefetching API(在网站https://davidwalsh.name/搜索HTML5 Link Prefetching)。详细代码见src目录下的index.html
 
 ```
     这个链接预取 API 非常有用，让开发者可以控制网页资源在后台安静的预先加载，这样用户在浏览网站或者使用
@@ -136,10 +134,16 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 <link rel="prefetch" href="http://davidwalsh.name/wp-content/themes/walshbook3/images/sprite.png" />
 
 ```
-+ Fullscreen API(在网站https://davidwalsh.name/搜索 Fullscreen API)
++ Fullscreen API(在网站https://davidwalsh.name/搜索 Fullscreen API)。详细代码见src目录下的index.html
 ```
 这个 HTML5 全屏 API 让 Web 开发者可以通过编程控制页面的全屏显示。这个 API 对于 JavaScript 游戏开发特别有用，例如这款单人射击游戏 BananaBread，在全屏状态下玩那是相当酷。
 ```
+
++ 支持拖拽释放(drag and drop) API
++ 支持地理位置API
++ 支持离线存储localStorage长期存储数据，浏览器关闭后数据不丢失,sessionStorage的数据在浏览器关闭后自动删除
++ 新的技术webworker、websocket、Geolocation
+
 
 ## 二、JavaScript部分
 ###    1.怎样添加、移除、移动、复制、创建和查找节点？
