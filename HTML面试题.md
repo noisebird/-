@@ -62,7 +62,61 @@
     属性选择器、伪类选择器、伪元素选择器。
 
 <p style="font-size">(2) CSS3新特性有哪些？</p>
-     
+
++ CSS3边框：创建圆角边框，添加阴影框，使用图片作为边框线条
+```   
+border-radius：0 0 0 5px;
+box-shadow:水平偏移 垂直偏移 模糊值 外延值 阴影的颜色
+border-image:url();
+```
+
++ CSS3背景：包含几个新的背景属性，提供更大背景元素控制
+```
+background-image:url(img_flwr.gif), url(paper.gif); 不同的背景图可以用逗号隔开
+background-size: 50px 100px; 也可以设置百分比
+background-origin:border-box;padding-box;content-box;设置背景图出现的位置
+background-clip:border-box;padding-box;content-box;设置背景剪裁
+```
++ CSS3渐变：可以让你在两个或多个指定的颜色之间显示平稳的过渡
+```
+线性渐变（Linear Gradients）- 向下/向上/向左/向右/对角方向
+第一种语法：
+background: linear-gradient(direction, color-stop1, color-stop2, ...);direction如果是左上 可以写多个值以空格隔开，left  top
+第二种语法：background: linear-gradient(angle, color-stop1, color-stop2);
+    angle:0;表示从下到上
+    angle:90;表示从左到右
+    angle:180;表示从上到下
+    angle:-90;表示从右到左
+以上的颜色值都可以使用rgba色加上透明度来表示
+
+径向渐变（Radial Gradients）- 由它们的中心定义
+语法：
+    background: radial-gradient(center, shape size, start-color, ..., last-color);
+    center:50% 50%;设置百分比,也可以使用像素
+    shape:circle,ellipse;默认是椭圆
+    size:closest-side,farthest-side,closest-corner,farthest-corner
+
+```
++ CSS3文本效果
+```
+主要有一下几个属性：
+    text-shadow:水平阴影 垂直阴影 模糊的距离 阴影的颜色
+    box-shadow
+    text-overflow:clip,ellipse;主要和overflow:hidden;white-space:norwap;一起使用设置溢出使用省略号代替
+    word-wrap:break-word;break-word强制把单词换到下一行
+    word-break:keep-all;keep-all单词会被分行显示
+```
++ CSS3 2D转换：可以对元素进行移动、缩放、转动、拉长或拉伸。
+```
+2D变换方法：
+    transform:translate(30px,20px); 像左移动30px,向右移动20px;
+    rotate(30deg);顺时针旋转30度
+    scale(2,3);沿着X轴拉伸2倍，沿着Y轴拉伸3倍
+    skew(30deg,20deg);沿着x轴倾斜30度，沿着y轴倾斜20度
+    matrix();有六个参数，包含旋转，缩放，移动（平移）和倾斜功能。
+    
+transform-origin:50% 50%;更改元素的位置
+```
     + 颜色：新增RGBA，HSLA模式
     + 文字阴影（text-shadow、）
     + 边框： 圆角（border-radius）边框阴影： box-shadow
@@ -77,6 +131,7 @@
     + border-image
     + 2D转换：transform：translate(x，y) rotate(x，y) skew(x，y) scale(x，y)
     + 3D转换
+
 
 <p style="font-size:16px;">(3) HTML5新增的内容有哪些？</p>
 
