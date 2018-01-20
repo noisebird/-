@@ -277,6 +277,7 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
     git reset --hard HEAD^   将代码回退到上一个版本HEAD~100
     git commit -m 'log'
     git diff HEAD -- readme.txt  查看工作区和版本库有哪些文件不一样
+    git rm 文件名                 删除版本库中的文件
     git push -u origin
 ```
 ###     13. js中异步的解决方案有哪些？
