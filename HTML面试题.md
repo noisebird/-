@@ -143,7 +143,7 @@ transform-origin:50% 50%;更改元素的位置
     }
 调用动画的语法：
     animation: animation-name animation-duration animation-timing-function animation-delay animation-iteration-count animation-direction animation-play-state
-                    名称             周期             动画的速度曲线          延迟多少秒开始           播放的次数         下一周期是否逆序执行     动画是否正在执行 
+                    名称             周期             动画的速度曲线          延迟多少秒开始           播放的次数         下一周期是否逆序执行     动画是否正在执行  
 ```
     + 颜色：新增RGBA，HSLA模式
     + 文字阴影（text-shadow、）
@@ -254,12 +254,19 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 ###     9. 什么是事件冒泡和事件捕获？
 ###     10. 什么是事件委托？
 ###     11. gulp的工作原理是什么？gulp常用的命令有哪些？
+```
+    Gulp 是基于 NodeJS 的项目，一个用作自动化构建的工具，业界一般用来建造前端的工作流。它的核心原理其实很简单，
+最主要是通过各种Transform Stream来实现文件的处理，然后再进行输出。Transform Streams 是 NodeJS Stream 的一种，
+是可读又可写的，它会对传给它的对象做一些转换的操作。
+```
 ###     12. git版本控制工具的工作原理是什么？git常用的一些命令有哪些？git如何用命令解决代码冲突？
+```
+123
+```
 ###     13. js中异步的解决方案有哪些？
     generator、async await promise
 ###     14.  如何解决跨域的问题？
-###     15. html5新增的内容有哪些？css3新增的内容有哪些？
-    1.新的文档类型  (New Doctype)
+
 ###     16. scss的常用的语法都有哪些？
 ###     17. react工作的原理，以及react的思想？
 ###     18. ajax是一个单独的模块，知识jquery封装了这个模块而已
