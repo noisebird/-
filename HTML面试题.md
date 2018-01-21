@@ -15,6 +15,7 @@
 ### 3、CSS实现垂直水平居中?
     position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;
     position:absolute；top:50%;left:50%;margin-left:-100px;margin-top:-100px;
+    使用弹性盒子:父容器设置display:flex;display:-webkit-flex; align-items: center;
 
 ### 4、简述一下src与href的区别?
         href 是指向网络资源所在位置，建立和当前元素（锚点）或当前文档（链接）之间的链接，用于超链接。src是指向外部资源的位置，
@@ -144,21 +145,72 @@ transform-origin:50% 50%;更改元素的位置
 调用动画的语法：
     animation: animation-name animation-duration animation-timing-function animation-delay animation-iteration-count animation-direction animation-play-state
                     名称             周期             动画的速度曲线          延迟多少秒开始           播放的次数         下一周期是否逆序执行     动画是否正在执行  
+
 ```
-    + 颜色：新增RGBA，HSLA模式
-    + 文字阴影（text-shadow、）
-    + 边框： 圆角（border-radius）边框阴影： box-shadow
-    + 盒子模型：box-sizing
-    + 背景：background-size 设置背景图片的尺寸background-origin 设置背景图片的原点
-    + background-clip 设置背景图片的裁切区域，以”，”分隔可以设置多背景，用于自适应布局
-    + 渐变：linear-gradient、radial-gradient
-    + 过渡：transition，可实现动画
-    + 自定义动画
-    + 在CSS3中唯一引入的伪元素是 ：：select  +
-    + 媒体查询，多栏布局
-    + border-image
-    + 2D转换：transform：translate(x，y) rotate(x，y) skew(x，y) scale(x，y)
-    + 3D转换
++ CSS3 弹性盒子
+```
+    弹性盒子是 CSS3 的一种新的布局模式。CSS3 弹性盒（ Flexible Box 或 flexbox），
+是一种当页面需要适应不同的屏幕大小以及设备类型时确保元素拥有恰当的行为的布局方式。
+    flex生效需定义其父元素display为flex或inline-flex
+flex-direction (适用于父类容器的元素上):设置或检索伸缩盒对象的子元素在父容器中的位置
+    flex-direction: row | row-reverse | column | column-reverse
+    row：横向从左到右排列（左对齐），默认的排列方式。
+    row-reverse：反转横向排列（右对齐，从后往前排，最后一项排在最前面。
+    column：纵向排列。
+    row-reverse：反转纵向排列，从后往前排，最后一项排在最上面。
+
+flex-wrap (适用于父类容器上):设置或检索伸缩盒对象的子元素超出父容器时是否换行。
+flex-wrap: nowrap | wrap | wrap-reverse
+            nowrap：当子元素溢出父容器时不换行。
+            wrap：当子元素溢出父容器时自动换行。
+            wrap-reverse：反转 wrap 排列。
+
+flex-flow (适用于父类容器上):复合属性。设置或检索伸缩盒对象的子元素排列方式。
+flex-flow: <‘flex-direction’> || <‘flex-wrap’>
+            [ flex-direction ]：定义弹性盒子元素的排列方向。
+            [ flex-wrap ]：定义弹性盒子元素溢出父容器时是否换行。
+
+justify-content (适用于父类容器上):设置或检索弹性盒子元素在主轴（横轴）方向上的对齐方式。
+    justify-content: flex-start | flex-end | center | space-between | space-around
+    flex-start：弹性盒子元素将向行起始位置对齐。该行的第一个子元素的主起始位置的边界将与该行的主起始位置的边界对齐，同时所有后续的
+    伸缩盒项目与其前一个项目对齐。
+    flex-end：弹性盒子元素将向行结束位置对齐。该行的第一个子元素的主结束位置的边界将与该行的主结束位置的边界对齐，同时所有后续的伸
+    缩盒项目与其前一个项目对齐。
+    center：弹性盒子元素将向行中间位置对齐。该行的子元素将相互对齐并在行中居中对齐，同时第一个元素与行的主起始位置的边距等同与最后
+    一个元素与行的主结束位置的边距（如果剩余空间是负数，则保持两端相等长度的溢出）。
+    space-between：弹性盒子元素会平均地分布在行里。如果最左边的剩余空间是负数，或该行只有一个子元素，则该值等效于'flex-start'。在
+    其它情况下，第一个元素的边界与行的主起始位置的边界对齐，同时最后一个元素的边界与行的主结束位置的边距对齐，而剩余的伸缩盒项目则平
+    均分布，并确保两两之间的空白空间相等。
+    space-around：弹性盒子元素会平均地分布在行里，两端保留子元素与子元素之间间距大小的一半。如果最左边的剩余空间是负数，或该行只有
+    一个伸缩盒项目，则该值等效于'center'。在其它情况下，伸缩盒项目则平均分布，并确保两两之间的空白空间相等，同时第一个元素前的空间
+    以及最后一个元素后的空间为其他空白空间的一半。
+
+align-items (适用于父类容器上):设置或检索弹性盒子元素在侧轴（纵轴）方向上的对齐方式。
+    align-items: flex-start | flex-end | center | baseline | stretch
+    flex-start：弹性盒子元素的侧轴（纵轴）起始位置的边界紧靠住该行的侧轴起始边界。
+    flex-end：弹性盒子元素的侧轴（纵轴）起始位置的边界紧靠住该行的侧轴结束边界。
+    center：弹性盒子元素在该行的侧轴（纵轴）上居中放置。（如果该行的尺寸小于弹性盒子元素的尺寸，则会向两个方向溢出相同的长度）。
+    baseline：如弹性盒子元素的行内轴与侧轴为同一条，则该值与'flex-start'等效。其它情况下，该值将参与基线对齐。
+    stretch：如果指定侧轴大小的属性值为'auto'，则其值会使项目的边距盒的尺寸尽可能接近所在行的尺寸，但同时会遵照
+    'min/max-width/height'属性的限制。
+
+align-content (适用于父类容器上):设置或检索弹性盒堆叠伸缩行的对齐方式。
+    align-content: flex-start | flex-end | center | space-between | space-around | stretch
+    flex-start：各行向弹性盒容器的起始位置堆叠。弹性盒容器中第一行的侧轴起始边界紧靠住该弹性盒容器的侧轴起始边界，之后的每一行都紧
+    靠住前面一行。
+    flex-end：各行向弹性盒容器的结束位置堆叠。弹性盒容器中最后一行的侧轴起结束界紧靠住该弹性盒容器的侧轴结束边界，之后的每一行都紧
+    靠住前面一行。
+    center：各行向弹性盒容器的中间位置堆叠。各行两两紧靠住同时在弹性盒容器中居中对齐，保持弹性盒容器的侧轴起始内容边界和第一行之间
+    的距离与该容器的侧轴结束内容边界与第最后一行之间的距离相等。（如果剩下的空间是负数，则各行会向两个方向溢出的相等距离。）
+    space-between：各行在弹性盒容器中平均分布。如果剩余的空间是负数或弹性盒容器中只有一行，该值等效于'flex-start'。在其它情况下，
+    第一行的侧轴起始边界紧靠住弹性盒容器的侧轴起始内容边界，最后一行的侧轴结束边界紧靠住弹性盒容器的侧轴结束内容边界，剩余的行则按一
+    定方式在弹性盒窗口中排列，以保持两两之间的空间相等。
+    space-around：各行在弹性盒容器中平均分布，两端保留子元素与子元素之间间距大小的一半。如果剩余的空间是负数或弹性盒容器中只有一
+    行，该值等效于'center'。在其它情况下，各行会按一定方式在弹性盒容器中排列，以保持两两之间的空间相等，同时第一行前面及最后一行后
+    面的空间是其他空间的一半。
+    stretch：各行将会伸展以占用剩余的空间。如果剩余的空间是负数，该值等效于'flex-start'。在其它情况下，剩余空间被所有行平分，以扩
+    大它们的侧轴尺寸。
+```
 
 
 <p style="font-size:16px;">(3) HTML5新增的内容有哪些？</p>
