@@ -285,7 +285,20 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
     git checkout -b dev          创建并切换分支
     git merge dev                把dev分支的内容合并到当前分支上
     git branch -d dev            删除dev分支
-    ·12
+    当我们正在dev分支上进行开发时，需要修改master分支上的bug要修改，此时由于功能还没有开发完成，又不能进行代码提交。如果直接切换分支的话，在dev分支上修改的内容并不会保存。
+    git stash      将修改的内容保存起来，即保存现在的工作现场。当前代码会被还原到提交前的代码
+    git stash list 列出工作现场
+    当bug修改完成后，切换到dev分支时，我们需要恢复我们的工作现场
+    git stash pop            这个方式会还原工作现场并删除保存的文件
+    git stash apply stash@{0} 这种方式会还原工作现场，但不删除保存的文件
+    git stash drop            删除保存的文件
+
+    git branch -D dev         强行删除分支，当创建了分支时，后来因为功能取消了，该分支也没有存在的意义了需要删除分支，如果直接删除分支，git会有友情提示，说该分支还没有被合并。
+    当你从远程仓库克隆时，实际上Git自动把本地的master分支和远程的master分支对应起来了，并且，远程仓库的默认名称是origin。
+    要查看远程库的信息，用git remote
+    用git remote -v显示更详细的信息：一般会有fetch和push两个权限
+    推送分支，就是把该分支上的所有本地提交推送到远程库
+    git push origin master
 ```
 ###     13. js中异步的解决方案有哪些？
     generator、async await promise
