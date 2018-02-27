@@ -22,7 +22,7 @@
 
 + 超链接
 
-  [abc](www.baidu.com “我是百度网址”)
+  欢迎来到[梵居闹市](http://blog.leanote.com/freewalk "梵居闹市")
 
   ```
     []-内部写链接文字
