@@ -22,6 +22,8 @@
 
 + 超链接
 
+  [百度一下](www.baidu.com "百度网")
+
   欢迎来到[梵居闹市](http://blog.leanote.com/freewalk "梵居闹市")
 
   ```
