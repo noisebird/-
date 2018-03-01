@@ -90,7 +90,7 @@ React中就使用到了很多函数式编程的方法来减少冗余代码。由
 比较容易。函数式编程贯穿了整个react。
 ```
 
-#### 1.2 JSX语法
+### 1.2 JSX语法
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JSX的官方定义式类XML语法的ECMAScript扩展。它完美的利用了JavaScript自带的语法和特性，并使用HTML语法来创建虚拟元素。但是react并不依赖JSX语法。即使脱离了它也能够进行使用。只是开发效率不够高而已。
 + DOM元素解析的过程
 
@@ -124,7 +124,7 @@ web页面是由一个个的HTML元素组成的，如果使用JavaScript来描述
         return {
             type:'button',
             props:{
-                className:`btn btn-${color}`,
+                className:{`btn btn-${color}`},
                 children:[{
                     type:'em',
                     props:{
@@ -208,3 +208,129 @@ web页面是由一个个的HTML元素组成的，如果使用JavaScript来描述
     3）组件元素首字母需要大写，dom元素首字母小写
     4）jsx语法中的注释需要使用{}括起来
     5）元素的属性for需要写成htmlFor，class属性需要写成className
+    6）表单元素disabled、required、checked和readOnly等，省略不写是false，只写属性名不写值表示为true
+    7）展开属性，如果知道设置哪些属性值，可以先不设置
+```
+    const component=<Component />;
+    component.props.name=name;
+    component.props.value=value;
+    -----------------------------
+    const data={name:'foo',value:'bar'};
+    const component=<Component {..data}/>
+```
+    8）自定义HTML属性，使用data-前缀来定义
+    9）JavaScript表达式使用{}括起来即可
+
+### 1.3 React组件
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;组件封装的基本思路就是面向对象思想。交互基本上是以操作DOM为主，逻辑上是结构上哪里需要变，就操作哪里。组件的封装需要满足如下几个规范：
++ 基本的封装性。尽管没有真正面向对象的方法，但是还是可以通过是梨花的方法来知道对象
++ 简单的生命周期的呈现。constructor方法和destory方法表示组件的挂在和卸载过程，其他过程需要手动实现来体现出来。
++ 明确的数据流动。即调用组件传入的属性。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;react组件基本上由3个部分组成--属性（props）、状态（state）以及生命周期组成、render（）方法。
+
+#### 1.3.1 React组件的构建方法
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;React组件的构造方式主要有三种：
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;方式1:React.createClass
+```
+    const Button=React.createClass({
+        getDefaultProps(){
+            return {
+                color:'blue',
+                text:'confirm'
+            }
+        },
+        getInitialState(){
+            return {open:'on'}
+        },
+        render(){
+            const {color,text}=this.props;
+            return (
+                <button className={`btn btn-${color}`}>
+                    <em>{text}</em>
+                </button>
+            )
+        }
+    });
+    ReactDOM.render(<Button />,document.querySelector('#app'));
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当调用Button组件时，就会被解析成React.createElement(Button)方法来创建Button实例。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;方式2：ES6 classes
+```
+    import React,{Component} from 'react';
+    class Button extends Component{
+        constructor(props){
+            super(props);
+            this.state={
+                open:'on'
+            }
+        }
+        static getDefaultProps={
+            color:'blue',
+            text:'confirm'
+        }
+        render(){
+            const {color,text}=this.props;
+            return (
+                <button className={`btn btn-${color}`}>
+                    <em>{text}</em>
+                </button>
+            )
+        }
+    }
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;方式3：无状态函数
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用无状态函数构建的组件成为无状态组件，示例代码如下：
+```
+    function Button({color='blue',text='Confirm'}){
+        return (
+            <button className={`btn btn-${color}`}>
+                <em>{text}</em>
+            </button>
+        )
+    }
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;无状态组件只传入props和context两个参数，也就是说它并不存在state，也没有生命周期方法，组件本身只有render方法。不过，像propsTypes和defaultProps还是可以通过向方法设置静态属性来实现的。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在合适的情况下，我们都应该且必须使用无状态组件。无组件状态不像上述两种组件，即在调用时会创建新实例。无组件状态始终保持一个实例。避免了不必要的检查和内存分配。
+
+### 1.4 React数据流
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在React中数据是自顶向下单向流动的，即从父组件传递到子组件。这一规则的好处是使得组件之间的关系变得单向可预测。props是会沿着父组件向下传递的，而state只是在组件内部使用。propsc传递只会传递到子组件中而不会传递到子组件的子组件中。
+#### 1.4.1 state
+    React创建的组件都自带setState()方法，当在组件中调用此方法时，会对组件进行重新渲染。例如有一个计数器组件
+```
+    import React,{Component} from 'react';
+    class Counters extends Component{
+        constructor(props){
+            super(props);
+            this.handleClick=this.handleClick.bind(this);
+            this.state={
+                count:0
+            }
+        }
+        handleClick(e){
+            e.preventDefault();
+            this.setState({
+                count:this.state.count+1
+            })
+        }
+        render(){
+            return (
+                <div>
+                    <p>{this.state}</p>
+                    <a href="#" onClick={this.handleClick}>更新</a>
+                </div>
+            )
+        }
+
+    }
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;需要注意的是：
+```
+    1）setState()是一个异步方法
+    2）一个生命周期内的所有setState()方法会做合并操作
+    3）单独对state的一个值进行设置，并不会清楚其他的状态值
+    4）状态的更新可以分为两种，一种是在内部更新，一种是在外部进行更新。
+```
+
+### 1.5 React组件生命周期
