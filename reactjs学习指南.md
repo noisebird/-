@@ -41,13 +41,13 @@
 <div align=center>
     <img src="./src/images/传统DOM更新.png">
 </div>
-<center>图1-1 传统DOM更新</center>
+<div align=center>图1-1 传统DOM更新</div>
 <p></p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在前端开发中，DOM操作是非常昂贵的，性能消耗最大的就是DOM操作。如果业务逻辑比较复杂时，操作DOM的代码会变得难以维护。React通过将真实的DOM树转换成JavaScript对象，也就是更多Virtual DOM。
 <div align=center>
     <img src="./src/images/React DOM更新.png">
 </div>
-<center>图2-1 React DOM更新</center>
+<div align=center>图2-1 React DOM更新</div>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;每次数据更新之后，都会重新对更多Virtual DOM进行计算，并和上一次生成的Virtual DOM进行比对，对发生变化的部分做批量更新。同时，React提供了直观的shouldComponentUpdate生命周期，来减少数据变化后不必要的Virtual DOM的比对过程，从而保证性能。
 
