@@ -61,7 +61,20 @@
 <p style="font-size">(1) CSS3选择器有哪些？</p>
 
     属性选择器、伪类选择器、伪元素选择器。
++ 属性选择器
+    E[attr]   E[attr='val']  E[attr~="val"]  E[attr*="val"]  E[attr!="val"] E[attr^="val"]
+    E[attr$="val"]
 
++ 伪元素原则器
+    E:not(s)  s为选择器
+    E:root    文档的根元素
+    E:first-child E:last-child E:nth-child E:only-child
+    E:checked  E:empty  E:enabled  E:disabled  E:target
+
++ 伪类选择器
+    E:first-letter/first-letter  E:first-line/first::line
+    E:before/E::before
+    E:after/E::after
 <p style="font-size">(2) CSS3新特性有哪些？</p>
 
 + CSS3边框：创建圆角边框，添加阴影框，使用图片作为边框线条
@@ -74,7 +87,7 @@ border-image:url();
 + CSS3背景：包含几个新的背景属性，提供更大背景元素控制
 ```
 background-image:url(img_flwr.gif), url(paper.gif); 不同的背景图可以用逗号隔开
-background-size: 50px 100px; 也可以设置百分比
+background-size: 50px 100px; 也可以设置百分比,还可以为cover，contain
 background-origin:border-box;padding-box;content-box;设置背景图出现的位置
 background-clip:border-box;padding-box;content-box;设置背景剪裁
 ```
@@ -301,6 +314,9 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 ###     4. typeof能够检测出的类型值？
 ###     5. 闭包与匿名函数的区别？
 ###     6. canvas和svg有什么区别？
+         Canvas是使用JavaScript程序绘图(动态生成)，SVG是使用XML文档描述来绘图。
+         Canvas是基于位图的图像，它不能够改变大小，只能缩放显示。SVG是基于矢量的，所有它能够很好的处理图形大小的改变。
+         Canvas提供的功能更原始，适合像素处理，动态渲染和大数据量绘制,SVG功能更完善，适合静态图片展示，高保真文档查看和打印的应用场景
 ###     7. 前端缓存
 ###     8. json
 ###     9. 什么是事件冒泡和事件捕获？
@@ -308,8 +324,13 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 ###     11. gulp的工作原理是什么？gulp常用的命令有哪些？
 ```
     Gulp 是基于 NodeJS 的项目，一个用作自动化构建的工具，业界一般用来建造前端的工作流。它的核心原理其实很简单，
-最主要是通过各种Transform Stream来实现文件的处理，然后再进行输出。Transform Streams 是 NodeJS Stream 的一种，
-是可读又可写的，它会对传给它的对象做一些转换的操作。
+最主要是通过各种Transform Stream来实现文件的处理，然后再进行输出。Transform Streams 是 NodeJS Stream 的一种，是可读又可写的，它会对传给它的对象做一些转换的操作。
+    Gulp 的基本操作命令有哪些？
+    gulp.task(name,depencies,callback) 创建任务
+    gulp.src()  读取一个文件
+    gulp.pipe() 管道，导入另一个文件中
+    gulp.dest() 将流写入指定的文件中
+    gulp.watch()  监听文件
 ```
 ###     12. git版本控制工具的工作原理是什么？git常用的一些命令有哪些？git如何用命令解决代码冲突？
 
@@ -343,6 +364,7 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 
     当我们正在dev分支上进行开发时，需要修改master分支上的bug要修改，此时由于功能还没有开发完
 成，又不能进行代码提交。如果直接切换分支的话，在dev分支上修改的内容并不会保存。
+
     git stash      将修改的内容保存起来，即保存现在的工作现场。当前代码会被还原到提交前的代码
     git stash list 列出工作现场
     当bug修改完成后，切换到dev分支时，我们需要恢复我们的工作现场
@@ -354,18 +376,80 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 
     当你从远程仓库克隆时，实际上Git自动把本地的master分支和远程的master分支对应起来了，并且，
 远程仓库的默认名称是origin。
+
     要查看远程库的信息，用git remote
     用git remote -v显示更详细的信息：一般会有fetch和push两个权限
     推送分支，就是把该分支上的所有本地提交推送到远程库
     git push origin master
 ```
 ###     13. js中异步的解决方案有哪些？
-    generator、async await promise
-###     14.  如何解决跨域的问题？
+js是单线程的，但是其底层是实现是用了多线程技术的，只是这一层对于用户来说是透明的，nodejs帮我们做了几乎全部的管理工作。所以我们不必要担心锁或者其他多线程编程中会遇到的问题，只用负责写好异步代码就ok。
++ 回调函数
+```
+    本身回调函数在使用过程中是没有任何问题的。但是随着项目的代码量增大时，嵌套的异步操作越来越大的时候，
+这种写法会变得十分的难以维护。这就是平时所说的“callback hell”。
 
+    同时，异步回调函数中的异常无法被最外层的try/catch语句捕获。
+
+    异步调用一般分为两个阶段，提交请求和预处理结果，这两个阶段之间有事件循环的调用，它们属于两个不
+同的事件循环，彼此没有关联。异步调用一般以传入callback的方式来指定异步操作完成后要执行的动作。而异
+步调用本体和callback属于不同的事件循环。try/catch语句只能捕获当次事件循环的异常，对callback无能
+为力。也就是说，一旦我们在异步调用函数中扔出一个异步I/O请求，异步调用函数立即返回，此时，这个异步调
+用函数和这个异步I/O请求没有任何关系。
+```
++ 事件监听
+```
+    事件监听是一种非常常见的异步编程模式，它是一种典型的逻辑分离方式，对代码解耦很有用处。通常情况下，
+我们需要考虑哪些部分是不变的，哪些是容易变化的，把不变的部分封装在组件内部，供外部调用，需要自定义的部
+分暴露在外部处理。从某种意义上说，事件的设计就是组件的接口设计。
+
+ 1 //发布和订阅事件
+ 2 
+ 3 var events = require('events');
+ 4 var emitter = new events.EventEmitter();
+ 5 
+ 6 emitter.on('event1', function(message){
+ 7     console.log(message);
+ 8 });
+ 9 
+10 emitter.emit('event1', "message for you");
+
+    这种使用事件监听处理的异步编程方式很适合一些需要高度解耦的场景。例如在之前一个游戏服务端项目中，
+当人物属性变化时，需要写入到持久层。解决方案是先写一个订阅方，订阅'save'事件，在需要保存数据时让发
+布方对象(这里就是人物对象)上直接用emit发出一个事件名并携带相应参数，订阅方收到这个事件信息并处理。
+```
++ Promise对象
+```
+    Promise对象代表了某个未来才会知道结果的事件(一般是一个异步操作)，并且这个事件对外提供了统一的API，
+可供进一步处理。使用Promise对象可以用同步操作的流程写法来表达异步操作，避免了层层嵌套的异步回调，代码也更加清晰易懂，方便维护。  
+    resolve()方法
+    reject()方法
+    .then();
+    .catch()
+    Promise.all([p1,p2,p3])  异步并发 p1,p2,p3都为Promise对象
+    Promise.all([p1,p2,p3]).then()
+    Promise.resolve() 通过该方法可以将现有的对象转换成Promise对象，且它的状态为fulfilled
+    var p=Promise.resolve('Hello');
+    p.then(function(s){console.log(s)})  //Hello
+    Promise.reject() 通过该方法可以将现有的状态转换成Promise对象，且它的状态为rejected
+```
++ Generator函数
+```
+```
++ ES7 async await
+```
+```
+###     14.  如何解决跨域的问题？JSONP的原理和实现以及cors怎么设置？
+###     15. AMD规范、CMD规范以及CommonJs规范各有什么特点以及原理？
 ###     16. scss的常用的语法都有哪些？
 ###     17. react工作的原理，以及react的思想？
 ###     18. ajax是一个单独的模块，知识jquery封装了这个模块而已
 ###     19. 移动端开发、和目前主流的框架的掌握情况是本人的弱势项。
 ###     20. 你所理解的全栈的概念有哪些？
+        前端全栈，是指PC端，Android端、IOS端开发，APP开发。
+        前端、后端、数据库、中间层、文件服务器、并发处理、测试
 ###     21. 对于code review了解有多少？
+
+###     22. 前端js如何操作cookie?
+        document.cookie="name=123;sex='男'";
+        document.cookie;会得到一个字符串;需要经过一个转换，将cookie转为对象
