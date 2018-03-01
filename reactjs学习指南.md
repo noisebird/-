@@ -36,7 +36,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;和目前市场上主流的MVVM/MVC框架有所不同，React并不是一个完整的MVC/MVVM框架。为什么说React并不是一个完整的MVVM/MVC框架呢？原因是，React主要专注于提供一个一个清晰，简洁的视图（view）解决方案。但是React又与模版引擎有所差别，React不仅专注于视图层的问题，又是一个包含view和controller的库。在复杂应用中使用React时，可以根据应用场景自行选择业务层框架，并根据需要搭配Flux、redux来使用。
 
-#### 1.1.2 react中虚拟DOM。
+#### 1.1.2 React精髓之虚拟DOM。
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;真实的页面对应的是一颗DOM树，在传统的开发模式中，需要更新页面上的内容时，都需要手动来操作DOM进行更新。
 <div align=center>
     <img src="./src/images/传统DOM更新.png">
@@ -47,7 +47,7 @@
 <div align=center>
     <img src="./src/images/React DOM更新.png">
 </div>
-<div align=center>图2-1 React DOM更新</div>
+<div align=center>图1-2 React DOM更新</div>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;每次数据更新之后，都会重新对更多Virtual DOM进行计算，并和上一次生成的Virtual DOM进行比对，对发生变化的部分做批量更新。同时，React提供了直观的shouldComponentUpdate生命周期，来减少数据变化后不必要的Virtual DOM的比对过程，从而保证性能。
 
@@ -68,3 +68,136 @@ innerHTML。很多人都没有意识到，在一个大型列表所有数据都�
     2) 可以很方便的和其他平台进行集成，可以通过React控件渲染成Android原生控件和IOS原生控件。
 ```
 更多Virtual DOM是否更快的问题解析，可以查看链接<a href="https://www.zhihu.com/question/31809713/answer/53544875" target="_blank">操作真实DOM比React更快</a>
+
+#### 1.1.3 React精髓之函数式编程
++ 什么式命令式编程？
+```
+    在过去，工业界的编程方式一直是以命令式编程的方式为主。命令式编程解决的式做什么的问题。
+人脑最擅长的是分析问题，而电脑最擅长的是执行指令。电脑只需要几条汇编指令就可以算出我们需要
+很长时间才能解出的运算。命令式编程就像是在给电脑下命令，如今主流的编程语言（包括C和Java等）
+都是由命令式编程构建起来的。
+
+```
++ 函数式编程
+```
+    函数式编程，对应的式声明式编程，它是人类模仿自己的逻辑思考方式发明出来的。例如当我们想要
+将一个数组以从小到大的形式，进行重新排序并返回一个新的数组时。如果是计算机的思考方式，则会需
+要一个新的数组，然后遍历元素依次找出最大值，次大值等，然后放进新数组。如果是人的思考方式，则是
+通过构建一个规则，这个过程就转换成了如何构建一个参数为数组的函数f的过程。这样计算过程可以被重复
+利用。
+    React就将以前重复构造UI的过程抽象成了组件，并且能够在给定参数的情况下约定如何渲染UI界面。
+React中就使用到了很多函数式编程的方法来减少冗余代码。由于，它本身就是简单的函数，所以测试过程
+比较容易。函数式编程贯穿了整个react。
+```
+
+#### 1.2 JSX语法
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JSX的官方定义式类XML语法的ECMAScript扩展。它完美的利用了JavaScript自带的语法和特性，并使用HTML语法来创建虚拟元素。但是react并不依赖JSX语法。即使脱离了它也能够进行使用。只是开发效率不够高而已。
++ DOM元素解析的过程
+
+web页面是由一个个的HTML元素组成的，如果使用JavaScript来描述这些元素时，这些元素可以被描述为纯粹的JSON对象。例如如下示例：
+```
+    <button className='btn btn-blue'>
+        <em>confirm</em>
+    </button>
+```    
+转换成JSON对象时，依然需要包括元素的类型以及属性信息：
+```
+    {
+        type:'button',
+        props:{
+            className:'btn btn-blue',
+            children:[{
+                type:'em',
+                props:{
+                    children:'confirm'
+                }
+            }]
+        }
+    }
+```
+有了元素的JSON对象信息后就可以在js中创建Virtual DOM元素了。
+
++ 组件元素的创建
+    有了JSON对象信息后，就可以很方便的封装button元素了，利用函数式编程的思想可以得到一种构建按钮的公共方法：
+```
+    const Button=({color,text}=>{
+        return {
+            type:'button',
+            props:{
+                className:`btn btn-${color}`,
+                children:[{
+                    type:'em',
+                    props:{
+                        children:text
+                    }
+                }]
+            }
+        }
+    })
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果需要在页面中调用button元素时，就可以很方便的使用Button({color:blue,text:'confirm'})来创建。其实仔细思考可以发现Button方法也可以作为元素而存在，方法名对应了元素的类型，参数对应了DOM元素的属性。这样构建的元素就是自定义类型的元素或组件元素。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“危险按钮”的组件元素的描述如下：
+```
+    const DeleteAccount-()=>{
+        type:'div',
+        props:{
+            children:[
+                {
+                    type:'p',   
+                    props:{
+                        children:'Are you sure?'
+                    }
+                },
+                {
+                    type:"DangerButton",
+                    props:{
+                        children:'Confirm',
+                    }
+                },{
+                    type:Button,
+                    props:{
+                        color:'blue',
+                        children:'Cancel'
+                    }
+                }
+            }]
+        }
+    }
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上述格式使用JSX语法可以表示为：
+```
+    const DeleteAccount=()=>{
+        <div>
+            <p>Are you sure？</p>
+            <DangerButton>confirm</DangerButton>
+            <Button>Cancel<Button>
+        </div>
+    }
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通过使用babel编译器将JSX语法文件编译成React可以执行的代码：
+```
+    var DeleteAccount=function DeleteAccount(){
+        return React.createElement(
+        'div',
+        null,
+        React.createElement(
+            'div',
+            null,
+            'Are you sure?'
+            )
+        ),
+        React.createElement(
+            DangerButton,
+            null,
+            'Confirm'
+            )
+        ),
+        React.createElement(
+            Button,
+            {color:'blue'},
+            'cancel'
+            )
+        )
+    }
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通过以上写法可以看出JSX并不是强制选项，可以上上述代码一样直接书写而无需编译，但是这样书写太麻烦了且开发效率低。

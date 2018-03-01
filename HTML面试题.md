@@ -41,10 +41,10 @@
 ###    8、什么叫优雅降级和渐进增强？
     渐进增强 progressive enhancement：
         针对低版本浏览器进行构建页面，保证最基本的功能，然后再针对高级浏览器进行效果、交互等改进和追加功能达到更好的用户体验。
-    
+
     优雅降级 graceful degradation：
         一开始就构建完整的功能，然后再针对低版本浏览器进行兼容。
-    
+
     区别：
         a. 优雅降级是从复杂的现状开始，并试图减少用户体验的供给
         b. 渐进增强则是从一个非常基础的，能够起作用的版本开始，并不断扩充，以适应未来环境的需要
@@ -264,7 +264,7 @@ HTML5中文档类型直接声明为<!DOCTYPE html>即可，不用像XHTML文档�
     这个链接预取 API 非常有用，让开发者可以控制网页资源在后台安静的预先加载，这样用户在浏览网站或者使用
 Web 应用程序的时候能够有流畅的使用体验。可以预加载整个页面，也可以是单个资源
 <!-- 预加载整个页面 -->
-<link rel="prefetch" href="http://davidwalsh.name/css-enhancements-user-experience" /> 
+<link rel="prefetch" href="http://davidwalsh.name/css-enhancements-user-experience" />
 <!-- 预加载一张图片 -->
 <link rel="prefetch" href="http://davidwalsh.name/wp-content/themes/walshbook3/images/sprite.png" />
 
@@ -295,7 +295,7 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
             getElementsByTagName() //通过标签名称
             getElementsByName() //通过元素的Name属性的值
             getElementById() //通过元素Id，唯一性
-    
+
 ###     2. 字符串都有哪些操作方法？
 ###     3. 数组都有哪些操作方法？
 ###     4. typeof能够检测出的类型值？
@@ -318,7 +318,7 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 ```
     工作区：工作区是项目文件夹
     暂存区：git add后的项目更改的文件都会先提交到暂存区中
-    版本库：本地的代码库，git commit -m 'log' 会将暂存区的代码提交到版本库中 
+    版本库：本地的代码库，git commit -m 'log' 会将暂存区的代码提交到版本库中
     git init命令会生成一个.git目录，就是git的版本库以及暂存区
 ```
 + git常用命令有哪些？
