@@ -333,6 +333,37 @@ web页面是由一个个的HTML元素组成的，如果使用JavaScript来描述
     4）状态的更新可以分为两种，一种是在内部更新，一种是在外部进行更新。
 ```
 #### 1.4.2 props
-    
+#### 1.4.3 props.children
+    组件元素中包裹的内容，即html结构。它是一个数组。这个应用场景可以灵活使用，调用组件时，用户自定义的内容。
+#### 1.4.4 dangerouslySetHTML 和 style 属性
+    出于安全考虑的原因（XSS 攻击），在 React.js 当中所有的表达式插入的内容都会被自动转义，就相当于 jQuery 里面的 text(…) 函数一样，任何的 HTML 格式都会被转义掉：
+```
+    <div
+      className='editor-wrapper'
+      dangerouslySetInnerHTML={{__html: this.state.content}}>
+    </div>
+```
+    React.js 中的元素的 style 属性的用法和 DOM 里面的 style 不大一样。
+```
+    <h1 style={{fontSize: '12px', color: 'red'}}>React.js 小书</h1>
+```
+
 
 ### 1.5 React组件生命周期
+
+### 1.6 React中的DOM操作
+    在React中基本不需要和DOM打交道，但是在有些情况中，React中并没有针对所有的DOM操作进行封装，所以需要我们进行手动的DOM操作。例如进入页面时需要自动聚焦到一个input输入框。这是就需要我们手动的获取DOM元素进行操作。
+```
+    方式一：
+        设置ref属性
+        ref={(ref)=>{this.name=ref}};
+        获取到DOM元素
+        this.name就可以调用到节点
+        需要注意的是如果回调函数没有用ES6的写法，而是用的function的写法，需要绑定this
+        即：{function(){}.bind(this)}
+    方式二：
+        设置ref属性
+        ref="name";
+        获取DOM元素
+        this.refs.name
+```
