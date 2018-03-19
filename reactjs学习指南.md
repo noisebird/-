@@ -347,6 +347,8 @@ web页面是由一个个的HTML元素组成的，如果使用JavaScript来描述
 ```
     <h1 style={{fontSize: '12px', color: 'red'}}>React.js 小书</h1>
 ```
+#### 1.4.5 PropTypes 和组件参数验证
+
 
 
 ### 1.5 React组件生命周期

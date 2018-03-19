@@ -45,3 +45,7 @@ renderApp(appState);
 dispatch({type:"MODIFY_TITLE",text:"修改标题"});
 dispatch({type:"MODIFY_CONTENT",text:"修改内容"});
 renderApp(appState);
+
+/*
+    继续提问，如何批量生产这些state和dipatch的集合？
+*/

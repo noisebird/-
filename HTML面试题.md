@@ -341,6 +341,9 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
     git merge dev                把dev分支的内容合并到当前分支上
     git branch -d dev            删除dev分支
 
+    git remote add origin [url]   本地仓库和远程仓库同步起来
+    git pull --rebase origin master  origin是远程仓库的别名，第一次创建本地库时，同步代码到远程仓库需要， 把远程仓库的内容同步下来
+
     当我们正在dev分支上进行开发时，需要修改master分支上的bug要修改，此时由于功能还没有开发完
 成，又不能进行代码提交。如果直接切换分支的话，在dev分支上修改的内容并不会保存。
     git stash      将修改的内容保存起来，即保存现在的工作现场。当前代码会被还原到提交前的代码
