@@ -4,7 +4,7 @@
     （border）,元素的外边距（margin）四个部分。这四个部分占有的空间中，有的部分可以显示相应的内容，而有的部分只用来分隔相邻的
     区域或区域4个部分一起构成了css中元素的盒模型。W3C 盒子模型的范围包括 margin、border、padding、content，并且 content 部
     分不包含其他部分。IE盒子模型的范围也包括 margin、border、padding、content，和标准 W3C 盒子模型不同的是：IE 盒子模型
-    content  部分包含了border和 pading。
+    content  部分包含了border和 pading。123
 
 ### 2、行内元素有哪些？块级元素有哪些？ 空(void)元素有那些？
     行内元素：a、b、span、img、input、strong、select、label、em、button、textarea
