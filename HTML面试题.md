@@ -323,7 +323,7 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 ```
 + git常用命令有哪些？
 ```
-    git pull = git fetch + git merge 
+    git pull = git fetch + git merge
     git init   创建git的版本库
     git add .  把文件添加到暂存区
     git status
@@ -334,6 +334,7 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
     git commit -m 'log'
     git diff HEAD -- readme.txt  查看工作区和版本库有哪些文件不一样
     git rm 文件名                 删除版本库中的文件
+    git rm --cached 文件名        清除暂存区中的文件
     git rm src -r -f             删除版本库中的文件夹（非空）
     git push -u origin
     git branch                   查看分支，*标注的是当前分支
@@ -363,6 +364,44 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
     推送分支，就是把该分支上的所有本地提交推送到远程库
     git push origin master
 ```
++ git中版本回退有哪几种方式？都有什么区别？
+```
+方式1:
+    使用git reset 版本号命令来回退版本。是将HEAD指针指向对象的版本上
+    git reset --hard 版本号。
+    加上--hard后的区别是，会更新工作区的内容和版本库中的内容一致。
+    如果不加上--hard回退版本，以后想要同步版本库和工作区的内容时，需要用命令：
+    git stash
+```
+```
+方式2:
+    使用git revert 版本号 来回退，这个与git reset的区别时，这个会创建一个新的提交，将指向的版本号
+    的内容回退，这个版本号之前或之后的提交都将保留
+```
+```
+方式3:
+    使用git checkout -- filename
+    这里分两种情况：
+    （1）file没有被添加到暂存区，撤销所有的操作，工作区的内容与HEAD的内容一致
+    （2）file已经被添加到暂存区，又做了修改，撤销内容与提交到暂存区之后的内容一致。
+```
++ git中如何清空暂存区的内容？
+    git rm --cached 文件名
++ git提交之前一般会做什么操作？
+```
+    git diff   文件比对
+    git diff filename  工作区与暂存区进行比较
+    git diff HEAD filename  工作区与HEAD进行比较
+    git diff --staged 或 --cached filename  暂存区与HEAD进行比较
+    git diff branchName filename   当前分支的文件与branchName分支的文件比较
+    git diff commitId filename     与某一次提交进行比较
+```
+
++ git add操作一些参数的意思
+    git add -A   保存所有修改
+    git add .    保存新的现价和修改，但不包括删除
+    git add -u   保存修改和删除，但是不包括新建文件
+
 ###     13. js中异步的解决方案有哪些？
     generator、async await promise
 ###     14.  如何解决跨域的问题？
