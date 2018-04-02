@@ -109,12 +109,16 @@
    
 ```
  使用这种可编程式的路由方式可以用作一些权限判断路由的跳转
- 
+
  vue中路由的调用与跳转
- <router-view name="viewA" />   <!-- 为视图指定name属性，在component中进行调用 -->
+    <router-view name="viewA" />   <!-- 为视图指定name属性，在component中进行调用 -->
 
     <router-link :to="{path:'/apple'}"></router-link>
++ 子组件中如何获取路由的参数
 
++ UI与URL分离
+
++ 路由中的钩子函数
 > 组件的声明周期
 
 > 组件的状态与属性
