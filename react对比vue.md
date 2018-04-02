@@ -52,7 +52,10 @@
     }
 
     render(<Router routes={routes} />, document.body)
-  路由的跳转，使用<Link>标签：
+ 
+```
+ 路由的跳转，使用<Link>标签：
+```
   <Link to=""></Link>
 ```
 
@@ -102,12 +105,15 @@
             }]
         }];
     router.push(routes);
-    使用这种可编程式的路由方式可以用作一些权限判断 
-    路由的跳转
-    <router-view name="viewA" />   <!-- 为视图指定name属性，在component中进行调用 -->
+   
+   
+```
+ 使用这种可编程式的路由方式可以用作一些权限判断路由的跳转
+ 
+ vue中路由的调用与跳转
+ <router-view name="viewA" />   <!-- 为视图指定name属性，在component中进行调用 -->
 
     <router-link :to="{path:'/apple'}"></router-link>
-```
 
 > 组件的声明周期
 
