@@ -358,7 +358,34 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
     用git remote -v显示更详细的信息：一般会有fetch和push两个权限
     推送分支，就是把该分支上的所有本地提交推送到远程库
     git push origin master
+
+
 ```
++ Q1: git pull代码时候出现，或者push代码无效
+    fatal: No remote repository specified.  Please, specify either a URL or a remote name from which new revisions should be fetched.
+```
+    解决:找到本地仓库项目里面的 .git文件夹，找到config打开，修改里面内容为
+    [core]  
+        repositoryformatversion = 0  
+        filemode = true  
+        bare = false  
+        logallrefupdates = true  
+        ignorecase = true  
+        precomposeunicode = false  
+    [remote "origin"]  
+        url = https://github.com/CrossLee/xxx.git  
+        fetch = +refs/heads/*:refs/remotes/origin/*  
+        pushurl = https://github.com/CrossLee/xxx.git  
+    [branch "master"]  
+        remote = origin  
+        merge = refs/heads/master  
+    把url和pushurl换成自己的git地址即可
+```
+
++ Q2: Updates were rejected because the tip of your current branch is behind？
+    
+    解决方法： 使用命令 git push -u origin master -f 强制推送代码 
+
 ###     13. js中异步的解决方案有哪些？
     generator、async await promise
 ###     14.  如何解决跨域的问题？
