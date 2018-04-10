@@ -70,4 +70,14 @@
   cmd+shift+T       测试与实现的代码来回切换
   alt+ctrl+r        运行测试
 
+  cmd+ctrl+a        QQ的截屏和录屏功能
+  cmd+shift+F12     无障碍模式
+  cmd+F12           快速查看文件的结构（类，方法等）
+  alt+F1            特定工具窗口（或Finder / Explorer）中打开文件
+  cmd+T             同步更新代码（可以选择从远程仓库，本地库，缓存区，stash中）
+  ctrl+v            vcs操作面板弹出
+  cmd+K             提交更改
+  cmd+shift+K       push到远程仓库
+  alt+F12           调出控制台
+
 ```
