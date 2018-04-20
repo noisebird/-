@@ -78,6 +78,10 @@
   ctrl+v            vcs操作面板弹出
   cmd+K             提交更改
   cmd+shift+K       push到远程仓库
-  alt+F12           调出控制台
+  alt+F12           调出控制台   
+  cmd+alt+T         调出try catch面板
+  ctrl+o            重写方法
+  ctrl+l            实现接口的方法
+
 
 ```
