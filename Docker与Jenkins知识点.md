@@ -147,3 +147,23 @@ Lost connection to MySQL server at ‘reading initial communication packet', sys
  ```
 
  20. Jenkins密钥：e4691a34510281b8d28ad98c30022f51dfce4a09
+
+ 21. 使用Docker部署Mysql时中文乱码问题
+
+理论上有两种解决方案，一个是在本地创建一个my.cnf文件挂载到容器的配置文件目录下，在配置文件中指定utf8编码，但通过自己实验，貌似这种方法不好使（可能自己有哪块没弄对），另一个方法就是在创建容器的时候就指定编码：
+
+docker run --name mysql_dev -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+想查看在创建容器时有哪些可用的选项，可以执行：
+
+docker run -it --rm mysql:tag --verbose --help
+
+22. mac下查看jdk安装路径
+
+/usr/libexec/java_home
+
+23. mac上查看某个端口运行的程序
+
+lsof -i:8080  
+
+kill -9 pid   --强制关闭进程
