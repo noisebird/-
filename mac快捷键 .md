@@ -11,6 +11,10 @@ Control ⌃       Caps Lock ⇪         Fn
 + 1. 剪切、拷贝、粘贴和其他常用快捷键
 
 ```
+    Command+ctrl+Q  锁定屏幕快捷键（这会和QQ快捷键冲突，取消QQ的快捷键设置）
+
+    Command+D      在控制台中输入这个命令可以分纵向两屏显示
+    
     Command-X     剪切所选项并拷贝到剪贴板。
 
     Command-C     将所选项拷贝到剪贴板。这同样适用于“访达”中的文件。
@@ -190,3 +194,7 @@ Control ⌃       Caps Lock ⇪         Fn
 
     按住 Command 键点按窗口标题	查看包含当前文件夹的文件夹。
 ```
+
+2. mac terminal终端打开指定文件夹 当前文件夹打开terminal
+
+    System Preferences -> Keyboard -> Shortcuts -> Services -> New Terminal at Folders/New Terminal Tab at Folder 这二项都勾上。并且这里可以设置快捷键

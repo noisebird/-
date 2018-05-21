@@ -1,5 +1,8 @@
 1. 什么是jenkins2的pipeline？
 
+    Pipeline as Code是Jenkins 2.0版本的精华所在，是帮助Jenkins实现从CI到CD华丽转身的关键工具。
+
+    所谓Pipeline，简单来说，就是一套运行于Jenkins上的工作流框架，将原本独立运行于单个或者多个节点的任务连接起来，实现单个任务难以完成的复杂发布流程。
     jenkins的实现是标准的master/slave模式，用户与master交互，master将job分布到slave上运行。
 
 2. jenkins的基本概念：

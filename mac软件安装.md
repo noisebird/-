@@ -18,4 +18,8 @@
 
 ### 11. sublime，vscode，atom，
 
-### 12. nodejs,Docker
+### 12. nodejs,Docker(jenkins,MySQL)
+
+### 13. java环境
+
+### 14. gitlab slack teamviewer

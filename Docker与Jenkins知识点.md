@@ -141,7 +141,9 @@ Lost connection to MySQL server at ‘reading initial communication packet', sys
 
 19. 使用Docker部署Mysql时中文乱码问题
 
-    解决办法：直接在创建mysql容器时指定编码
+    解决办法：（1）直接在创建mysql容器时指定编码
+            （2）在springboot项目中，连接数据库的url中指定编码
+
 ```
  docker run --name mysql_dev -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
  ```

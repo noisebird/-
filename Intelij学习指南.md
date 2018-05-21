@@ -85,3 +85,14 @@
 
 
 ```
+
+2. idea无法创建class，提示以下错误： Unable to parse template "Class"
+
+    在settting中找到file and code template里添加下面的代码，就好了，原因是没有模版了，不能自动生成
+```
+    #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+    #parse("File Header.java")
+    public class ${NAME} {
+    }
+```
+3. 使用Intelij创建gradle项目时，project name要和包名保持一致
