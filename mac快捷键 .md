@@ -198,3 +198,25 @@ Control ⌃       Caps Lock ⇪         Fn
 2. mac terminal终端打开指定文件夹 当前文件夹打开terminal
 
     System Preferences -> Keyboard -> Shortcuts -> Services -> New Terminal at Folders/New Terminal Tab at Folder 这二项都勾上。并且这里可以设置快捷键
+
+3. MAC /usr/bin/目录下 Operation not permitted的解决
+
+      苹果从 OS X El Capitan 10.11 系统开始使用了 Rootless 机制，可以将该机制理解为一个更高等级的系统的内核保护措施，系统默认将会锁定 /system、/sbin、/usr 这三个目录。
+    Rootless 机制虽然在一定程度上增加了系统的安全性，但作为一名开发人员会经常的操作 /usr 这个目录，这个时候你会发现你使用的任何命令都会提示没有操作权限，即使使用 root 权限也不行。
+
+  + 关闭 Rootless
+    ```
+    $ csrutil disable
+    ```
+  + 开启 Rootless
+    ```
+    $ csrutil enable
+    ```
+    
+4. mac下启动mysql出现如下错误：
+
+    Warning:The /usr/local/mysql/data directory is not owned by the 'mysql' or '_mysql'
+    
+    这应该是某种情况下导致/usr/local/mysql/data的宿主发生了改变。
+    
+    解决方法：打开终端运行 sudo chown -R mysql /usr/local/mysql/data 即可。
