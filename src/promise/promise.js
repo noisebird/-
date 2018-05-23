@@ -1,4 +1,4 @@
-// 这种方式实现了Promise对象的链式调用，但是后续then方法的代码都会立即执行
+// 这种方式实现了Promise对象的链式调用，但是后续then方法的代码都会立即执行111
 function Promise(fn) {
     // 分别保存状态，值，以及回调函数
     let state = 'pending',
