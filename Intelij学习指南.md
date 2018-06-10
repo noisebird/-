@@ -52,7 +52,7 @@
   cmd+F6            重命名方法
   ctrl+T            弹出其他操作框
   cmd+alt+ +/-      展开/折叠代码
-  cmd+shif+ +/-     展开/折叠所有代码
+  cmd+shift+ +/-     展开/折叠所有代码
   cmd+G             查找变量
   F5                复制文件
   F6                移动文件
@@ -82,6 +82,23 @@
   cmd+alt+T         调出try catch面板
   ctrl+o            重写方法
   ctrl+l            实现接口的方法
+  
+  shift+f7          查看选中字符在哪些文件中有使用到
+  
+  cmd+g             查看下一个元素
+  cmd+shift+g       查看上一个元素
+  ctrl+g            选中当前元素和一下一个元素
+  ctrl+command+g        选中所有元素
+  command+p         查看参数信息
+  
+  cmd+alt+T         调出surround with框
+  cmd+shift+u       大小写转换
+  cmd++/-           展开收起所有代码
+  cmd+F12           查看当前类的所有方法变量
+  cmd+alt+O         查找标识符
+  cmd+shift+R       全局替换
+  
+  
 
 
 ```
@@ -96,3 +113,7 @@
     }
 ```
 3. 使用Intelij创建gradle项目时，project name要和包名保持一致
+
+4. 如何调出Intelij的右侧的导航栏
+
+    Appearance&Behavior  -> Appearance -> 勾选show tool window bar
