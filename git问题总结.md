@@ -203,7 +203,9 @@
 13. git reset --hard ,git reset --soft ,git reset --mixed的区别？
     
     git reset --hard HEAD~2   --会把工作区和缓存区都变成当前版本
+    
     git reset --soft HEAD~2   --工作区和缓存区都不会变
+    
     git reset --mixed HEAD~2  --缓存区会变成切换的版本，工作区不变
     
     
