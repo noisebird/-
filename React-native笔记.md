@@ -67,3 +67,87 @@
     （17）绑定reducer到store
     
     （18）设置路由，react-native-router-flux
+    
+    
+2. loadash常用api
+
+3. PropTypes
+
+4. React-Native开发的一些注意事项
+    
+    (1) 子组件调用父组件的中的函数时，如果函数中有使用到this，在子组件中调用时要注意，this到底是指向的父组件还是子组件。
+    如果父组件中是使用的()=> 箭头函数那么在子组件中调用时是使用父组件的this环境。如果在进行props传递时，给方法绑定了父组
+    件的this环境，那么在子组件中调用时，也是直接使用的是父组件的this。
+    
+    (2) 使用[].map(item => (<View></View>))渲染时，要注意如果是（）而不是{},如果是{},里面的语句要加上return
+
+    (3) 写功能时，先写底层组件，确定需要哪些属性，状态，以及和父组件的关联。
+    
+    (4) 在写功能时，如果两个组件之间需要有数据通信，可以通过在外层容器中设置一个状态，然后把这个state以props的形式传递到子容器里去（这样子容器中有关联关系的两个组件就能有交互了）
+
+    (5) 加载数据时，需要使用遮罩，maskPromise(异步函数)
+    
+    (6)如何写圆环（使用css）
+        
+        设置border-width等于环的radius，背景色另外设置
+
+5. Redux-actions-helpers API的一些介绍
++ action的写法
+```
+import { createAction, createActionPrefix } from 'redux-actions-helper';
+
+const nameCreator = createActionPrefix('USER');
+export const login=createAction(nameCreator('LOGIN'),()=>null)   //第二个参数为action的处理函数，fetch，ajax等，得到返回结果
+```
+
++ reducer的写法
+```
+import { combineReducers } from 'redux';
+import { combineActions, handleActions } from 'redux-actions';
+import * as userActions from '../actions/user';
+
+const getToken=combineActions(userActions.login,userAction.loginToken)
+const getUserName=handleActions({
+    [userActions.login]:(state,action)=>actions.payload.username
+})
+const getPassword=handleActions({
+    [userActions.login]:(state,action)=>actions.payload.password    
+})
+export default combineReducers({
+    getUserName,
+    getPassowrd
+})
+
+```
+
+6. react-native-router-flux 如何设置路由跳转
+```
+import { ActionConst, Actions, Router, Scene } from 'react-native-router-flux';
+class Router extends Component{
+    render(){
+        return ( 
+        <Router createReducer={props.createReducer} getSceneStyle={getSceneStyle}>
+            <Scene  key="root"
+                    navigationBarStyle={styles.navigationBar}
+                    titleStyle={styles.navBarTitle}
+                    backButtonStyle={styles.navBarButton}
+                    rightButtonStyle={styles.navBarButton}
+                    backButtonTextStyle={styles.navBarButtonText}
+                    rightButtonTextStyle={styles.navBarButtonText}
+                    backButtonImage={backArrowIcon}>
+                <Scene  key="resetPassword"
+                        component={ResetPasswordContainer}
+                        title="重设密码"
+                        hideNavBar={false}
+                        navigationBarStyle={styles.resetPasswordNavBar}
+                        renderRightButton={() => <HomeRightTitle />}
+                        renderBackButton={() => <Logo />}
+                        backTitle="返回"/>
+            </Scene>
+        </Router>)
+    }
+}
+
+
+```
+
