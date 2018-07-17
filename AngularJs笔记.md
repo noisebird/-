@@ -192,6 +192,17 @@
             <img src="./src/images/angular/router-result2.png">
        </div>
        
+      最后，关于路由的信息，还有一点补充，目前路由跳转的时候都是有对应的组件的，当输入的路由没有相关组件对应时我们应该如何配置呢？很简单，我们只需要在生成一个404组件，然后在
+      路由配置中，配置一下匹配规则就可以了。
+      ```
+        const routes: Routes = [
+          {path: '', component: HomeComponent},
+          {path: 'product', component: ProductComponent},
+          {path: '**', component: Code404Component},
+        ];
+      ```
+      将path设置为**，就可以匹配任意规则了，注意路由匹配的过程是从上之下的，当匹配到了相关的路由，后面的路由就不会继续匹配了，所以类似这种404的路由匹配，应该放在路由的最后。
+       
        
         
     
