@@ -169,6 +169,7 @@
       在html代码中我们看到了一个新的指令(click),通过（）+ 事件名的形式我们可以很轻松的绑定事件。关于事件绑定的内容，将会在后续的章节中详细介绍。
      
       接下来，我们修改在app-component.ts中的代码如下：
+      
       ```
         import { Component } from '@angular/core';
         import {Router} from '@angular/router';
@@ -185,7 +186,8 @@
             this.router.navigate(['/product']);
           }
       ```
-       代码中我们使用到了构造函数，注入了一个Router对象，这样在这个组件中我们就可以使用router了。这里对象是通过构造函数，依赖注入进组件的。有关依赖注入的知识点也会在
+      
+      代码中我们使用到了构造函数，注入了一个Router对象，这样在这个组件中我们就可以使用router了。这里对象是通过构造函数，依赖注入进组件的。有关依赖注入的知识点也会在
        后续章节中详细介绍。最后我们在事件处理函数中调用router的navigate方法，进行路由跳转。好了，这下我们的通过Router对象进行路由跳转功能也已经完成了。接下来我们可以
        看一下效果：
        <div align='center'>
@@ -203,7 +205,70 @@
       ```
       将path设置为**，就可以匹配任意规则了，注意路由匹配的过程是从上之下的，当匹配到了相关的路由，后面的路由就不会继续匹配了，所以类似这种404的路由匹配，应该放在路由的最后。
        
-       
+      (6) 如何在路由中传递参数
+        
+      通过上一节的学习我们知道了，如何使用路由来做跳转，在这一节中我们将会学习如何在路由中传递参数。
+      
+      在路由中传递参数的方式主要有三种：
+        
+      + 在查询参数中传递数据
+      + 在路由路径中传递数据
+      + 在路由配置中传递参数 
+      
++ 在查询参数中传递数据
+
+    如何在html中传递：使用指令[queryParams]='{id:1,name:"lisi"}'
+    ```
+        <a [routerLink]="['/']">主页</a>
+        <a [routerLink]="['/product']" [queryParams]="{id:123}">商品详情页</a>
+        
+        <button (click)="toProductPage()">商品内容</button>
+        <router-outlet></router-outlet>
+    ```
+    queryParams中的参数对象，也可以直接关联到，controller中设置的属性。
+    
+    如何在控制器中获取：使用ActivatedRoute对象获取
+    ```
+        import {Component, OnInit} from '@angular/core';
+        import {ActivatedRoute} from '@angular/router';
+        
+        @Component({
+          selector: 'app-product',
+          templateUrl: './product.component.html',
+          styleUrls: ['./product.component.css']
+        })
+        export class ProductComponent implements OnInit {
+        
+           productId: number;
+        
+          constructor(private routerInfo: ActivatedRoute) {
+          }
+        
+          ngOnInit() {
+            this.productId = this.routerInfo.snapshot.queryParams['id'];
+          }
+        
+        }
+
+    ```
++ 在路由路径中传递数据 
+    
+    在路由路径中传递数据，主要分为三步：
+    + 在路由配置中给路由加上参数： ` {path: 'product/:id', component: ProductComponent}`
+    
+    + 在传递参数的组件中，加上参数值: `<a [routerLink]="['/product',123123]">商品详情页</a>`
+    
+    + 在接受参数的组件中接收: ` this.productId = this.routerInfo.snapshot.params['id'];`  
+    
++ 什么是参数快照，和参数订阅  
+    
+    上面那种获取参数信息的方式我们称之为参数快照。参数快照会存在一个问题，当一个组件从自身跳转到自身时，如果组件的属性值都没有发生变化，只是路由传递的参数值发生了
+    变化，那么在组件中获取参数的值是不会发生变化的。那么这就会存在着一个问题，数据没有刷新。这个时候我们就可以使用参数订阅的方式，来订阅参数的改变。
+    `  this.routerInfo.params.subscribe(params => this.productId = params['id']);`
+    这样我们就可以实时的监听参数的变化了。subscribe是rtjs中的内容，这个在以后的内容中会详细介绍。
+    
+     
+        
         
     
 
