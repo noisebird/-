@@ -267,6 +267,171 @@
     `  this.routerInfo.params.subscribe(params => this.productId = params['id']);`
     这样我们就可以实时的监听参数的变化了。subscribe是rtjs中的内容，这个在以后的内容中会详细介绍。
     
+
+4. 重定向路由
+    
+    在用户访问一个特定的地址时，将其重定向到另一个指定的地址。
+    
+    ```
+        const routes:Routes=[
+        {path:'',redirectTo:'/home',pathMatch:'full'},// 重定向到home
+        {path:'home',compenent:HomeComponent},
+        
+        ]
+    ```
+    
+    
+5. 子路由
+    在主目录中会有一个<router-outlet>插座，显示子路由的信息。子路由中也是可以传递参数的。组件本身不知道任何路由相关的信息，都是在组件内部，
+    或者配置文件中，配置的。形成的是一个插座的父子关系。
+        语法：
+     ```
+        {path:'home',component:HomeComponent,children:[
+            {path:'xxx',component:XXXComponent}
+            {path:'yyy/:id',component:YYYComponent}
+        ]}
+        
+        <a [routerLink]="['./']">商品描述</a>
+        <a [routerLink]="['./seller',99]">销售信息</a>
+        <router-outlet></router-outlet>
+        
+        
+     ```
+     
+6. 辅助路由
+    
+    允许你定义多个插座
+    ```
+    <router-outlet></router-outlet>
+    <router-outlet name='aux'></router-outlet>
+    
+    {path: 'xxx',component:XxxComponent,outlet:"aux"}
+    {path: 'yyy',component:YyyComponent,outlet:"aux"}
+    
+    <a [routerLink]="[{outlets:{primary:'home',aux:'xxx'}}]">Xxx</a>
+    <a [routerLink]="[{outlets:{aux:'yyy'}}]">Xxx</a>
+    
+    ```
+    可以通过配置primary设置主路由
+    
+7. 路由守卫
+    
+   只有当用户已经登陆并拥有某些权限时灿能进入某些路由
+   
+   一个由多个表单组件组成的向导，例如注册流程，用户只有在当前路由的组件中填写了满足要求的信息才可以导航到下一个路由。
+   
+   当用户未执行保存操作而视图离开当前导航时提醒用户
+   
+   （1） 三种路由守卫
+     + CanActive: 处理导航到某路由的情况
+     
+     + CanDeactivate: 处理当前路由离开的情况
+     
+     + Resolve：在路由激活之前获取路由数据
+     
+     就是设置了很多钩子函数
+     
+ + CanActive
+  
+    第一步生成守卫对象 login.guard.ts类
+     
+     ```
+        import {CanActivate} from '@angular/router'
+        
+        export class LoginGuard implements CanActivate{
+            canActivate(){
+                let loggedIn:boolean =Math.random() <0.5
+                
+                if(!loggedIn){
+                    console.log('用户未登陆！')
+                }
+                return loggedIn;
+            }
+            
+        }
+     ```
+     
+     第二步 在路由配置中配置守卫的信息
+     
+     ```
+        {path:'home',component:HomeComponent,children:[],canActivate:[LoginGuard]}
+      ```
+        
+     第三步 实例话login.guard类
+     
+     在@NgModule中的providers属性主添加这个类就ok
+     
+     
++ CanDeactive
+    
+      第一步生成守卫对象 Unsaved.guard.ts类。CanDeactive类必须要指定保护的是哪个组件，即离开组件时能够得到通知
+       
+       ```
+          import {CanDeactivate} from '@angular/router'
+          import {ProductComponent} from '../product/product.component'
+          
+          export class UnsavedGuard implements CanDeactivate<ProductComponent>{
+              canDeactivate(component:ProductComponent){
+                 return window.confirm("您还没有保存确定要离开吗？")
+              }
+              
+          }
+       ```
+       
+       第二步 在路由配置中配置守卫的信息(属性值时数组，可以配置多个守卫)
+       
+       ```
+          {path:'home',component:HomeComponent,children:[],canActivate:[LoginGuard],canDeactive:[UnsavedGuard]}
+        ```
+          
+       第三步 实例话login.guard类
+       
+       在@NgModule中的providers属性主添加这个类就ok
+       
+       
+            
++ resolve守卫（可以预先在组件加载之前去服务器上读数据）
+    
+      第一步生成守卫对象 product.resovle.ts类。CanDeactive类必须要指定保护的是哪个组件，即离开组件时能够得到通知
+       
+       ```
+          import {Resovle} from '@angular/router'
+          import {ProductComponent} from '../product/product.component'
+          @Injectable
+          export class ProductResolve implements Resolve<ProductComponent>{
+          
+            constructor(private router:Router){
+            }
+             resolve(route:ActivatedRouteSnapShot,state:RouterStateSnapshot):Observable<Product>|Promise<Product>|Product{
+                 let productId:number=router.parmas["id"];
+                 
+                 if(productId==1){
+                    return new Product(1,"iphone8")
+                 } else {
+                    this.router.navigate(['/home']);
+                    return undefined;
+                 }   
+             }
+          }
+       ```
+       
+       第二步 在路由配置中配置守卫的信息(属性值时数组，可以配置多个守卫)
+       
+       ```
+          {path:'home',component:HomeComponent,children:[],canActivate:[LoginGuard],canDeactive:[UnsavedGuard],resolve:{
+            product:ProductResovle
+          }}
+        ```
+          product是传递给组件的数据
+       第三步 实例话login.guard类
+       
+       在@NgModule中的providers属性ProductResolve
+      
+    
+     
+     
+   
+    
      
         
         
@@ -276,8 +441,84 @@
     
 
 ### 第四章：Angular依赖注入
+1. 学习内容
+    
+ + 什么是依赖注入模式以及使用依赖注入的好处
+ + 介绍angular的依赖注入实现：注入器和提供器
+ + 注入器的层级关系
+ 
+2. 什么是依赖注入，使用依赖注入的好处？
+   
+   依赖注入：Dependency Injection简称DI
+   
+   <div align='center'>
+      <img src='./src/images/dependency.png'>
+   </div>
+     
+   providers:[{provider:ProductService,useClass:ProductService}]
+    
+   provider相当于是一个token，useClass表示这个token对应的实体类，需要new一个这个类型的实体类
+   
+  依赖注入的特性：松耦合，可测性
+
+3. 注入器是构造函数，提供器是配置中的provider属性    
+
+     <div align='center'>
+          <img src='./src/images/provider.png'>
+       </div>
+       
+     生成服务的命令是：ng g service service.name
+     
+     当一个提供器声明在模块中时，任何组件都是可以用的。组件中也是可以声明提供器的。服务中也是可以注入其他服务的。服务需要加上@Injectable注解，这个注解的意思是表示
+     可以注入其他依赖
+     
+     工厂提供器：当我们不能仅仅只是通过new来创建一个对象时，我们就需要使用工厂提供器来创建对象
+     
+     ```
+        providers:[{
+            provide:ProductService,
+            useFactory:(logger:Loggerservice,config)=>{
+               // let logger =new LoggerService();
+               // let dev =Math.random()>0.5;
+                if(config.isDev){
+                    return new ProductService(logger);
+                }else{
+                    return new AnotherProductService(logger);
+                }
+            },
+            deps:[LoggerService,"IS_DEV_ENV"]   //依赖
+        },Loggerservice，{
+            provide:"IS_DEV_ENV",useValue:{isDev:false}
+        }]
+        
+        工厂方法创建的对象是单例的,变量也是可以跟服务一样，注入的。但是不是useClass而是useValue，useValue可以是任何类型。
+        考虑一下如何在其他组件中使用变量
+     ```
+4. 注入器的层级关系
+    应用级注入器，主组件注入器，子组件注入器
+    
+    找对应的提供器时，先从子组件开始搜索注入器，没有找到就向上搜索，知道搜到位置，如果到了应用级注入器还没有搜到，则会抛出异常。
+    
+    如何手动的注入服务
+    
+    ```
+        constructor(private injector:Injector){
+            this.productService=injecor.get(ProductService);
+        }
+    ```
+ 
 
 ### 第五章：数据绑定，响应式编程和管道
+
+1. 学习内容
++ 数据绑定
+
++ 响应式编程
+
++ 管道
+
+2. 数据绑定
+    
 
 ### 第六章：组件间的通信
 
