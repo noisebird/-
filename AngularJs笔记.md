@@ -519,7 +519,248 @@
 
 2. 数据绑定
     
+    在Angular中默认的数据绑定方式是单向数据绑定。如果改变控制器中的值时，模版上的数据会跟着改变。反之如果使用jquery等js库改变页面上的值时
+    控制器中的数据是不会改变的。
+       
+        <h1>{{productTitle}}</h1>
+    使用插值表达式将一个表达式的值显示在模版上
+     
+        <img [src]='imgUrl'>
+    使用方括号将HTML标签的一个属性绑定到一个表达式上
+    
+        <button (click)="toProductDetail()">商品性情</button>
+    使用小括号将组件控制器的一个方法绑定为模版傻姑娘一个事件的处理器
+    
+3. 事件绑定
+     <div align='center'>
+          <img src='./src/images/event.png'>
+       </div>
+4. 属性绑定
+    
+      angular中的插值表达式和属性绑定其实是一回事。
+        
+        [] 属性绑定， <img [src]="imgUrl">。属性绑定的过程中如果少了[],angualr是不会将它作为controller中的变量，绑定的
+        
+        {{}} 插值表达式  <img src="{{imgUrl}}">
+        
+        从实现上来看，Angualr会将插值表达式转换为属性绑定
+   
++ DOM属性
+    加载页面后，页面上html标签都会被浏览器解析成为dom节点。dom操作会改变dom的值，显示的是当前值。
++ HTML属性
+    html属性是保持不变的。html属性指定了初始值。
+     
+    <input value="Tom" (onclick)="handleClick(event)">
+    
+    handleClick(event){
+        console.log(event.target.value)
+        console.log(event.target.getAttribute("value"));
+    }
+    
+    html属性中button 按钮的disabled属性只要加上了这个属性，不管设置为true还是false，都是禁用的。只有是有dom操作
+    改变属性值的时候才是有效的，这就是dom属性的价值。
+    
++ HTML属性和DOM属性的关系
 
+    + 少量HTML属性和DOM属性之间有着1:1的映射，如id
+    + 有些HTML属性没有对应的DOM属性，如colspan
+    + 有些DOM属性没有对应的HTML属性，如textContent
+    + 就算名字相同，HTML属性和DOM属性也不是同一个东西
+    + HTML属性的值指定了初始值；DOM属性的值表示当前值
+    + DOM属性的值可以改变；HTML属性的值不能改变
+    
+   Angular中模版绑定是通过DOM属性和事件来工作的，而不是HTML属性。
+   
+   DOM属性绑定的过程：
+    <div align='center'>
+        <img src='./src/images/dom-bind.png'>
+    </div>
+5. HTML属性绑定
+    基本HTMl属性绑定
+    
+    CSS类绑定
+    ```
+        <div class="aaa bbb" [class]="someExpression"> something</div>
+        <div [class.special]="isSpecial">something</div>
+        <div [ngClass]="{aaa:isA,bbb:isB}">
+    ```    
+    样式绑定：
+      ```
+        <button [style.color="isSpecial?'red':'green'"]>Red</button>
+        
+        <div [ngStyle]="{'font-style':this.canSave?'italic':'normal'}">
+      ```
+      
+      table中td标签的colspan属性是只有html属性的，所以在angular中是不能有属性表达式来绑定数据的。
+      以下这种写法是不会生效的。
+      
+      ```
+        <table>
+            <tr>
+                <td colspan="{{1+1}}">Thougthworks</td>
+            </tr>
+        </table>
+      ```
+      可以绑定到HTML属性上
+      
+       ```
+          <table>
+                  <tr>
+                      <td [attr.colspan]="{{1+1}}">Thougthworks</td>
+                  </tr>
+              </table>
+        ``` 
+       HTML属性绑定的过程：
+            <div align='center'>
+                <img src='./src/images/dom-bind.png'>
+            </div>
+       绑定html属性能够生效是因为改变了HTML属性，html属性变化后触发了dom属性的变化。所以并不是因为angular的
+       数据绑定使得dom值发生改变的
+       
++ css的绑定
+    首先我们有模版文件
+    ```
+        <div class="a b c">Thoughtworks</div>
+    ```
+    样式文件为
+     ```
+        a{
+            backgroundColor:yellow;
+        }
+        b{
+            color:red;
+        }
+        c{
+            font-size:20;
+        }
+     ```
+     此时的显示效果为黄底红字
+     
+     接下来我们使用anugalr的数据绑定，给class绑定相应的值
+     ```
+        <div [class]='divClass'>Thoutghtworks</div>
+     ```
+     controller中的代码为
+     ```
+        divClass:string;
+        construtor(){
+            setTimeout(()=>{
+            this.divClass='a b c'},3000)
+        }
+     ```
+     我们可以看到3秒之后变为黄底红字了。使用这种方式设置class会进行全替换，有时候我们并不想替换所有的样式。
+     
+     ```
+        <div class='a b' [class.c]='isBig'>Thoutghtworks</div>
+     ```
+      controller中的代码为
+      ```
+             isBig:boolean;
+             construtor(){
+                 setTimeout(()=>{
+                 this.isBig=true},3000)
+             }
+      ```
+      3秒后字体会变大。如何同时控制多个类名
+      
+       ```
+            <div [ngClass]='divClass'>Thoutghtworks</div>
+       ```
+        controller中的代码为
+            ```
+               divClass:any={
+                    a:false,
+                    b:false,
+                    c:false
+               };
+               construtor(){
+                   setTimeout(()=>{
+                   this.divClass={a:true,b:true,c:true}},3000)
+               }
+        ```
+        这样就同时在后端控制了多个类名
+
++ style样式绑定
+    style样式绑定的方法基本与class绑定的过程一致
+    ```
+        <div [style.color]="isDev?'rede':'blue'">ThoughtWorks</div>
+    
+    ```
+    controller中的代码为：
+   ```
+           isDev:boolean=true;
+           construtor(){
+               setTimeout(()=>{
+               this.isDev=false},3000)
+           }
+    ```
+    可以看到3秒之后，字体由红色变为了蓝色
+    
+   在css中经常会用到一些单位，例如px如何在绑定过程中使用这些单位呢？
+    
+    ```
+        <div [style.font-size.em]='isDev?3:1'>Thoughtworks</div>
+    ```
+    如何设置多个内联样式呢？
+    ```
+        <div [ngstyle]="divStyle">ThougthWorks</div>
+    ```
+    controller中的代码
+    ```
+        divStyle:any={
+            color:'red',
+            background-color:'yellow'
+        }
+        constructor(){
+           setTimeout(()=>{
+            this.divStyle={
+                color:'yellow',
+                background-color:'red'
+            }
+           })
+        }
+    ```
+
+6. 双向绑定
+    通过双向绑定我们可以使得模型和视图保持同步。之前使用input，通过事件改变数据模型，使得dom节点中的数据发生改变
+    这种绑定方式是单向数据绑定。Angualr默认是单向绑定的，但angualr是支持双向数据绑定的。双向数据绑定最常用在表单
+    处理上。用在div，span元素上是没用的。
+    使用[(ngModel)]指令可以实现双向绑定
+    
+    
+7. 管道
+
+    管道是处理原始值到显示值的一个转换。多个管道可以连在一起，同时生效
+    
+    ```
+        <p>我的生日是{{birthday | date | uppercase}}</p>
+    ```
+    angular中内置了十几个管道，我们介绍几个最常用的管道
+        date   可以加参数  date: 'yyyy-MM-dd HH:mm:ss'
+        uppercase
+        lowercase
+        number 格式化数字。 | number:'2.1-4'' 1 表示最少的小数位，4表示最多的小数位。如果最小小数位不够会补0
+        async 异步管道
+        
++ 自定义管道
+    
+    使用ng g pipe pipe/mutiple 命令生成管道，组件和管道都是需要声明在declarations属性中的
+    ```
+        import {Pipe,PipeTransform} from '@angular/core';
+        @Pipe({
+            name:'multipe'
+        })
+        export class MultiplePipe implements PipeTransform{
+            transform(value:number,args?:number):any{
+                if(!args){
+                    args=1;
+                }
+                return value*args;
+            }
+        }
+    ```
+    
+    
 ### 第六章：组件间的通信
 
 ### 第七章： 表单处理
@@ -576,6 +817,12 @@ Angular框架只有一个依赖注入点，就是通过构造函数注入。
 + 属性绑定
     
     angular中的插值表达式和属性绑定其实是一回事。
+    
+    [] 属性绑定， <img [src]="imgUrl">
+    
+    {{}} 插值表达式  <img src="{{imgUrl}}">
+    
+    从实现上来看，Angualr会将插值表达式转换为属性绑定
     
     angular中HTML属性和DOM属性的区别？
     HTML属性是指元素的初始值，不会被改变的
