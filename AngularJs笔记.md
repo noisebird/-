@@ -762,70 +762,456 @@
     
     
 ### 第六章：组件间的通信
+1. 在介绍本章内容前，我们先来看一下一张图，程序从本质上看都是一颗组件树。1号组件是整个组件的根
+    包含2，3，6组件，2号组件又包含4，5两个子组件，在设计一个组件时我们要尽量保证组件是松耦合的，
+    组件之间相互知道，交互的越少越好，松耦合的组件重用性才高。假设我们点击了组件4中的一个按钮时，
+    触发了组件5中的一段逻辑。按照传统的做法，我们会在组件4中调用组件5的方法，这么做的话组件4就和
+    组件5紧密关联在了一起。有没有可能组件4在根本不知道组件5的情况下，实现上面的需求呢？答案是肯定的
+    在上一章里，我们介绍了如何使用依赖注入来开发松耦合的组件，但是光有依赖注入是不够的。在这一章里
+    我们会介绍如何使用一种松耦合方式开实现高重用性的组件 ，首先我们会学习组件的输入输出属性，在两个具有
+    父子关系的组件间传递数据。然后我们会介绍使用中间人模式传递数据，以及如何实现一个中间人模式，以便在
+    没子组件进行通信，最后我们会学习组件生命周期以及angualr的变化发现机制。
+    
+    <div align='center'>
+       <img src='./src/images/component.png'>
+    </div>
+2. 学习内容
++ 组件的输入输出属性
++ 使用中间人模式传递数据
++ 组件生命周期以及angualr的变化发现机制
+
+3. 组件的输入属性
+
+4. 组件的输出属性
+    Angualr组件可以使用一个EventEmitter对象来发射事件，这些事件可以被其他组件所处理。EventEmitter对象
+    是rxjs中Subject类的子类，在响应式编程中，它既可以作为被观察者，也可以作为观察者。它既可以通过他的emit方法
+    来发射事件，也可以用subscribe方法来订阅eventemitter发射的事件流。
+    + 在组件中发射事件流
+    子组件中的代码为：
+    ```
+        export class PriceQuoteComponent implements OnInit {
+            stockCode:String = "IBM";
+            price: numebr;
+            // 可以通过指定名字
+            @Output("priceChange")
+            lastPrice:EventEmitter<PriceQuote> =new EventEmitter();
+            
+            constructor(){
+                setInterval(()=>{
+                    let priceQuote:PriceQuote =new PriceQuote(this.stockCode,this.price*Math.random());
+                    this.price = priceQuote.lastPrice;
+                    this.lastPrice.emit(priceQuote);
+                },1000)
+            }
+        }
+        
+        export class PriceQuote {
+            constructor (public stockCode:String, public price: number){
+            }
+        }
+    ```
+    
+    app-component中html代码为：
+    ```
+    <app-price-quote (priceChange)="priceQuoteHandler($event)">
+    </app-price-quote>
+    <div>
+        这是父元素
+    </div>
+    <div>
+        股票代码是{{priceQuote.stockCode}},
+        股票价格是{{priceQuote.lastPrice | number:'2.2.-2'}}
+    <div>
+    ```
+    + 在父组件中接收事件流
+    ```
+        export Class AppComponent {
+            stock = '';
+            priceQuote: PriceQuote = new PriceQuote('',0);
+            
+            priceQuoteHandler(event: PriceQuote){
+                this.priceQuote = event;
+            }
+        }
+    ```
+    
+    事件名和@Output()指定的事件名是一样的。这里是利用@output装饰器向外发射事件，并通过事件携带
+    数据，但是这个事件只能通过父组件，通过绑定事件处理函数的形式来获取数据，如果我们现在的组件不存在
+    这种父子关系，那我们应该如何处理呢？这就是接下来要介绍的中间人模式。
+
+5. 中间人模式
+    
+    组件应该是内聚的，不应该依赖外部的组件，要实现这样的松耦合的组件，我们需要使用到中间人模式。
+    让我们回顾一下本章开始的那张图。组件1是整个组件树的跟组件，组件1可以充当组件2，3，6的中间人
+    组件2，可以充当组件4，5的中间人，组件3可以充当组件7，8的中间人。中间人负责从一个组件接收数据，
+    然后将数据传递给另一个组件。以我们上一节的股票价格为例，我们有两个组件，报价组件和下单组件，报价组件
+    需要将股票价格，传递给下单组件，但是这两个组件并不存在父子关系。
+    
+    子组件中的代码为：
+     ```
+            export class PriceQuoteComponent implements OnInit {
+                stockCode:String = "IBM";
+                price: numebr;
+                // 可以通过指定名字
+                @Output("priceChange")
+                lastPrice:EventEmitter<PriceQuote> =new EventEmitter();
+                @Output()
+                buy: EventEmitter<PriceQuote> = new EventEmitter();
+                
+                constructor(){
+                    setInterval(()=>{
+                        let priceQuote:PriceQuote =new PriceQuote(this.stockCode,this.price*Math.random());
+                        this.price = priceQuote.lastPrice;
+                        this.lastPrice.emit(priceQuote);
+                    },1000)
+                }
+                buyStock(event){
+                    this.buy.emit(new PriceQuote(this.stockQuote,this.price))
+                }
+            }
+            
+            export class PriceQuote {
+                constructor (public stockCode:String, public price: number){
+                }
+            }
+      ```
+        
+     app-component中html代码为：
+      ```
+       <app-price-quote (buy)="buyHandler($event)">
+       <app-order [priceQuote]="priceQuote"></app-order>
+       
+      ```
+      
+      + 在父组件中接收事件流
+      ```
+              export Class AppComponent {
+                  stock = '';
+                  priceQuote: PriceQuote = new PriceQuote('',0);
+                  
+                  buyHandler(event: PriceQuote){
+                      this.priceQuote = event;
+                  }
+              }
+      ```
+      + 下单组件
+      ```   
+        exprot class OrderComponent implements OnInit {
+            @Input()
+            priceQuote: PriceQuote;
+            
+            constructor() {
+            
+            }
+            ngOnInit() {
+            }
+        }
+        
+      ```
+      orderComponent组件的html代码
+      ```
+        <div>我是下单组件</div>
+        <div>
+            买100手{{priceQuote.stockCode}}股票</br>
+            买入的价格是{{priceQuote.lastPrice}}
+        
+      ```
+      但是我们需要注意的是，报价组件是没有任何和下单组件相关的东西，报价组件只是把自己的价格发射
+      出去。在这个例子中我们使用了一个父组件，来作为兄弟组件的中间人。如果我们两个组件根本不是兄弟
+      组件，这种情况下怎么办。组件4和组件6根本没有共同的父组件，这时我们应该使用可注入的服务作为中间人
+      ，组件可以订阅这个服务发射的事件流。在与服务器通信的那一章节会介绍使用服务来作为中间人（在实战的讲解中）。
+    
+
+6. 组件生命周期钩子函数
+    
+    在组件的生命周期中会发生各种各样的事件，从组件的创建开始，angular的变更检测机制就会开始监控组件，组件
+    被创建以后会被添加到dom树上，并且由浏览器渲染。在这之后组件的属性可能会发生变化，这会导致组件被重新渲染
+    最后组件会被销毁。在我们这张图上我们展示了组件的所有的生命周期钩子函数，这些钩子可以在特定的组件特定的生命周期
+    事件发生时，执行你需要的事件逻辑。图中红色的方法只会执行1次，而绿色的方法会被多次调用，这些钩子分布在生命周期的三个
+    阶段：初始化阶段，变更检测阶段，组件销毁阶段。在组件的初始化完成后，看到组件。变更检测机制会保证组件的属性与页面的显示
+    保证同步。如果由于路由等操作，组件从dom树上移除，angualr会执行组件的销毁。
+    
+   <div align='center'>
+      <img src='./src/images/component.png'>
+   </div>
+   
+   使用ng -g component name 命令生成的组件中，是默认实现了OnInit接口的，每一个钩子都是@angular/core里定义的一个接口
+每一个接口都有一个唯一的钩子方法。方法的名字是由ng+接口名子组成的。 从纯技术的角度来讲， 接口对于javascript和typescript开发者
+都是可选的，javascript语言本身是没有接口这一概念的，angualr在运行时看不到Typescript接口，Typescript中定义的接口在编译成javascript的时候
+已经消失了。幸运的是，实现这些接口的生命不是必须的，不用写implements 接口也能调用钩子函数，angular会检查组件的类，一旦发现钩子方法被定义了，就调用
+它，angular会找到ngOnInit方法，有没有这个implements OnInit无所谓。但是还是建议添加接口，这样可以获得Ide的一些支持，以及一些强类型的检查。
+下面我们来实现所有的生命周期的接口：
+    ```
+        let logIndex: number =1;
+        export class LifeComponent implements OnInit,OnChanges,DoCheck,AfterContentInit,
+            AfterContentChecked,AfterViewInit,AfterViewChecked,OnDestory{
+            @Input()
+            name:String;
+            
+            logIt(msg: string){
+                console.log(`#${logIndex++} ${msg}`)
+            }
+            
+            constructor(){
+                this.logIt("name属性在constructor里的值是"+name);
+            }
+            // ngOnChanges传入了一个SimpleChanges对象，里面包含了改变前的值和改变后的值
+          
+            ngOnChanges(changes: SimpleChanges):void{
+                let name = changes['name'].currentValue
+                this.logIt("name属性在ngOnChanges里的值是"+name);
+            }    
+            
+            ngOnInit(){
+                 this.logIt('ngOnInit');
+            }
+            
+            ngAfterContentInit(): void{
+                 this.logIt('ngAfterContentInit');
+            }
+            
+            ngAfterContentChecked(): void {
+                 this.logIt('ngAfterContentChecked');
+            }
+            
+            ngAfterViewInit(): void {
+                 this.logIt('ngAfterViewInit');
+            }
+            
+            ngAfterViewChecked(): void {
+                 this.logIt('ngAfterViewChecked');
+            }
+            
+            ngDoCheck(): void{
+                this.logIt('ngDoCheck');
+            }
+            
+            ngOnDestory(): void{
+                 this.logIt('ngOnDestory');
+            }
+            
+            
+        }
+    ```
+    app-component组件内容
+    
+      ```
+        export class AppComponent{
+            title = "Tom";
+        }    
+      ```
+      ```
+        <app-life [name] = "title"></app-life>
+      ```
+    浏览器输出结果：
+    ```
+       #1 name属性在constructor里的值是：
+       #2 name属性在ngOnChanges里的值是：Tom
+       #3 ngOnInit
+       #4 ngDoCheck
+       #5 ngAfterContentInit
+       #6 ngAfterContentChecked
+       #3 ngAfterViewInit
+       #3 ngAfterViewChecked       
+    ```
+    ngOnchanges在ngOnit方法之前调用，属性如果是传值进入组件的就会调用ngOnChanges方法。如果组件依赖传入的值，这个时候初始化操作就不要写在
+    contructory里，而是需要写在ngOnInit方法里。ngDoCheck是关于变更检测的，是在angualr的变更检测周期中调用。ngAfterContentInit,ngAfterContentChecked
+    是跟组件的内容投影相关的。ngAfterViewInit，ngAfterViewChecked是跟组件的模版的初始化检查相关的。
+    注意这些例子只是实现angular在加载组件的过程中的执行顺序。在真正的开发过程中我们并不需要实现所有的组件，我们只需要实现
+    我们所用到的钩子函数即可。angualr在执行过程中，如果实现了钩子函数就执行，没有实现就跳过。
+    
+    
+
+7. onChanges钩子函数
+    
+    这个钩子是在父组件初始化或修改子组件的输入参数时调用。在理解ngOnchages钩子函数在什么时候会被调用，什么时候不会被调用时，我们需要理解两个概念就是
+    什么是可变对象，什么是不可变对象。在javascript中字符串是不可变的，对象是可变的。
+    ```
+        var greeting = 'hello';
+        greeting = 'hello world';
+        
+        var user = {name:'Tom'};
+        user.name = 'Jack';
+    ```
+    在js中字符串创建之后会分配一个内存地址，当我们修改了值之后，会分配一个新的地址给这个变量。所以当我改变值时，已经换了一个地址，所以以前的内容是不可变的。
+    对象就不一样了，改变了对象的某一个属性值，其内存地址是不变的但是值的内容却发生改变了。
+    我们通过一个例子来看看ngOnChanges的调用过程：
+     
+    首先我们创建一个child组件`ng -g component child`
+    ```
+        export class ChildComponent implements OnInit {
+            @Input()
+            greeting: string;
+            
+            @Input()
+            user:{name:string};
+            
+            message:string = "初始化消息";
+            
+            constructor() {
+            
+            }
+            
+            ngOnInit() { 
+            
+            }
+            
+            ngOnChanges(changes: SimpleChanges): void {
+                console.log(JSON.stringify(changes,null,2))
+            }
+        }
+    ```
+    childComponent的模版
+    ```
+      <div class ="child">
+           <h2>我是子组件</h2>
+           <div>问候语：{{greeting}}</div>
+           <div>姓名：{{user.name}}</div>
+           <div>消息：<input [(ngModel)] = "message" ></div>
+      </div>  
+    ```
+    childComponent的样式
+    ```
+        .child {
+            backgroundColor:lightblue;
+        }
+    ```
+    
+   开始写父组件：appComponent
+   ```
+    export class AppComponent {
+      greeting:string ='hello';
+      user:{name:string} ={name:'Tom'};
+      constructor(){
+      }  
+    }
+    ```
+    父组件模版：
+    ```
+        <div class="parent">
+            <h2>我是父组件</h2>
+            <div>
+                问候语：<input type='text' [(ngModel)='greeting']>
+            </div>
+             <div>
+                姓名：<input type='text' [(ngModel)='user.name']>
+            </div>
+            <app-child [greeting]='greeting' [user]='user'></app-child>
+        </div>
+        
+    ```  
+   父组件样式   
+   ```
+        .parent{
+            backgroundColor:cyan;
+        }
+   ```  
+   
+   显示效果：
+   
+    页面初始化的时候，因为默认是空，传入的值，就会触发ngOnChanges方法
+    改变greeting的值，会调用ngOnChanges方法
+    改变user.name的值，不会调用ngOnChanges的方法
+    改变user.name的值，不会调用ngOnChanges方法，但是子组件的值变了，这是因为angular的检测机制
+    改变message的值，也不会嗲用ngOnChanges方法，这是以为message在子组件中不是一个输入属性，没有有@Input装饰器注解
+    
+   结论：
+    ngOnchanges方法只会在不可变值改变并且是输入属性时才调用
+    
+  
+8. 变更检测和DoCheck函数
+    
+    angular的变更检测机制是由zone.js来实现的，我们可以在package.js中找到zone.js的依赖包。这个包的主要目的是保证
+    属性的变化和页面的显示保持同步。浏览器中的任何异步事件，都会触发变更检测。比如点击按钮，输入数据，请求服务器，调用
+    setTimeout方法等。当变更检测运行时，他会检测模版上所有绑定关系。如果一个组件的属性被改变，那么被绑定的属性的模版区域则会要进行相应的更新。
+    需要注意的是变更检测机制永远不会改变属性的值，只是将变化的属性的值反应到模版上。目前我们的angular项目是一个以主组件为根的组件树，当angualr应用运行时
+    每个组件都会生成一个属于自己的变更检测器，当任何一个变更检测器检测到变化时，zone.js就会根据组件的变更检查策略来检查组件，以判断组件是否需要更新他的模版。
+    
+    （1）angular实现了两种变更检测策略 default策略，OnPush策略
+    
+       <div align='center'>
+          <img src='./src/images/component.png'>
+       </div>
+       如果所有的组件都使用default策略，那么不管变更发生在哪个组件上，zone.js都会检测整颗组件树。如果某个特定的组件生命自己的变更策略
+       为OnPush,那么只有当这个组件的输入属性发生变化的时候，zone.js才会检测这个组件以及这个组件的子组件，还是会从跟组件开始往下检测，当遇到
+       设置变更检测策略为onpush的组件时，只有当这个组件的输入属性变化时，才会检测这个组件以及其子组件。
+        <div align='center'>
+          <img src='./src/images/component.png'>
+        </div>
+        
+        我们来看一个稍微复杂点的例子，如上图所示，当孙子组件1发生变化的是时候，整个的组件树中除了子组件2，不会被检查意外，其他所有的组件都会被检查一遍
+        所谓的检查就是调用docheck方法。检查是由整个组件的跟组件开始的，往下检查所有的组件，不管变更发生在什么位置。只有在子组件2的输入属性发生变化的时候才会检查
+        这个组件。
+        
+        监听属性的变化，实现一个DoCheck钩子，childComponent组件中：
+      ```
+          export class ChildComponent implements OnInit,DoCheck {
+                    @Input()
+                    greeting: string;
+                    
+                    @Input()
+                    user:{name:string};
+                    
+                    message:string = "初始化消息";
+                    
+                    oldUsername:string;
+                    
+                    changeDetected:boolaen = false;
+                    
+                    noChangeCount:number =0;
+                    
+                    constructor() {
+                    
+                    }
+                    
+                    ngOnInit() { 
+                    
+                    }
+                    
+                    ngOnChanges(changes: SimpleChanges): void {
+                        console.log(JSON.stringify(changes,null,2))
+                    }
+                    
+                    ngDoCheck(): void{
+                        if(this.user.name != this.oldUsername) {
+                            this.changeDetected = true;
+                            console.log("DoCheck:user.name从"+this.oldUsername+"变为"+this.username);
+                        }
+                        
+                        if(this.changeDetected){
+                            this.noChangeCount = 0;
+                        }else {
+                            this.noChangeCount = this.noChangeCount+1;
+                            console.log("DoCheck:user.name没变化时ngDoCheck方法已经被调用"+this.noChangeCount+"次")；
+                        }
+                        this.changeDetected = false;
+                    }
+                }
+      ```
+      可以发现在input框中点击时不改变值也会触发DoCheck方法的调用。ngDoCheck钩子函数会被非常频繁的调用。所以，我们对ngDoCheck方法的调用必须
+      非常轻量，高效，不然很有可能会引起性能问题。如果钩子函数上有check关键字，当组件发生变化时，所有组件中实现了带有check关键字的钩子函数都会被
+      重新执行
+        
+9. view钩子
+
+10. ngContent指令
+
+
+
 
 ### 第七章： 表单处理
+1. 表单处理内容介绍
+2. 表单简介
+3. 模版式表单
+4. 响应式表单
+5. 响应式表单重构
+6. 表单校验
+7. 状态字段
+8. 模版式表单校验
 
 ### 第八章：与服务器间的通信
-### 第四章：依赖注入
+1. 与服务器通讯内容介绍
+2. web服务器
+3. http通讯
+4. websocket通讯
 
-1. 什么是依赖注入，使用依赖注入的好处？
-
-    依赖注入：Dependency Injection简称DI
-    
-    
-+ 依赖注入的好处？
-
-    帮助我们以一种松耦合的方式来编写代码。
-
-2. Angular的依赖注入的实现：注入器和提供器
-
-+ 注入器
-```
-    constructor(private productService:ProductService){...}
-``` 
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;构造函数中声明我需要一个ProductService这样一个token，new出来的实体类，会根据提供器中定义的token对应的类型来实例化这个依赖
-+ 提供器
-
-    provider:[ProviderService]
-    
-    等价于
-    
-    providers:[{provider:ProductService,useClass:ProductService}]
-    
-    provider相当于是一个token，useClass表示这个token对应的实体类，需要new一个这个类型的实体类
-    
-    
-3. 注入器的层级关系
-
-@Injectable() 装饰器是指当前的服务可以注入其他的服务，并不是理解为当前服务可以被注入。Component中的Controller并没有使用@Injection()装饰器来修饰，但是也可以使用构造函数来注入需要的服务，这是因为Angular给组件使用了@Component装饰器，而这个装饰器和管道装饰器是@Injection装饰器的子类。
-
-Angular中注册一个服务时，一定要在模块的配置中的providers属性中添加相应的服务名
-
-建议所有的服务在创建时都加上，@Injectable装饰器
-
-Angular框架只有一个依赖注入点，就是通过构造函数注入。
-
-
-### 第五章：数据绑定，响应式编程和管道
-
-1. 数据绑定（angular中数据默认的是单项绑定的）
-
-+ 事件绑定
-    
-    （eventName）元素中使用（）表示绑定事件，eventName表示事件名。
-
-+ 属性绑定
-    
-    angular中的插值表达式和属性绑定其实是一回事。
-    
-    [] 属性绑定， <img [src]="imgUrl">
-    
-    {{}} 插值表达式  <img src="{{imgUrl}}">
-    
-    从实现上来看，Angualr会将插值表达式转换为属性绑定
-    
-    angular中HTML属性和DOM属性的区别？
-    HTML属性是指元素的初始值，不会被改变的
-    DOM属性的值是可以被改变的，例如input框在输入时，DOM属性就会被改变，HTML属性不会改变
-    
-    模版绑定是i 通过DOM属性和事件来工作的，而不是HTML属性。
