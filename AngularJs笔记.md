@@ -452,7 +452,7 @@
    依赖注入：Dependency Injection简称DI
    
    <div align='center'>
-      <img src='./src/images/dependency.png'>
+      <img src='./src/images/angular/dependency.png'>
    </div>
      
    providers:[{provider:ProductService,useClass:ProductService}]
@@ -464,7 +464,7 @@
 3. 注入器是构造函数，提供器是配置中的provider属性    
 
      <div align='center'>
-          <img src='./src/images/provider.png'>
+          <img src='./src/images/angular/provider.png'>
        </div>
        
      生成服务的命令是：ng g service service.name
