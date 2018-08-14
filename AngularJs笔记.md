@@ -1193,8 +1193,181 @@
       重新执行
         
 9. view钩子
-
+    
+    接下来我们会介绍ngAfterViewInit,ngAfterViewChecked这两个钩子。
+    之前我们介绍过，angular应用其实就是一颗组件树，在这颗组件树上我们可以通过，绑定@Output参数来获取子组件中的数据，通过@Input参数来接收父组件传过来的
+    数据。但是在有些情况下父组件需要调用子组件中的方法。接下来我们看一下如何在父组件中和模版中调用子组件的方法。首先我们来创建一个childComponent组件
+    
+    ```
+       export class ChildComponent implements OnInit {
+            constructor() { }
+            
+            ngOnInit() {
+            
+            }
+            
+            greeting(name:string) {
+                console.log("hello"+name);
+            }
+       } 
+    ```
+    
+    父组件模版
+    ```
+        <app-child #child1></app-child>
+        <app-child #child2></app-child>
+    ```
+    父组件ts文件
+    ```
+       export class AppComponent implements OnInit{
+          @ViewChild("child1")
+          child1:ChildComponent;
+          
+          constructor() {
+          
+          }
+          
+          ngOnInit(): void{
+            this.child1.greeting("thougthworks")
+          }
+       } 
+    ```
+    在AppComponent中声明一个由@ViewChild装饰器声明的一个变量。这个装饰器的属性可以指定一个字符串，指向子组件。
+    通过这个装饰器我们可以通过这个变化获得子组件的引用。获得这个引用之后我们可以在或组件的任何方法里调用子组件的方法。
+    运行程序后可以看到控制台中输出了hello thoughtworks，这说明在父组件中成功的调到了子组件中的方法。接下来我们看一下如何
+    在父组件的模版中调用子组件中的方法。
+    ```
+         <app-child #child1></app-child>
+         <app-child #child2></app-child>
+         <button (click) = "child2.greeting('ThoughtWorks')">click me</button>
+    ```
+    运行程序在页面中点击按钮会在控制台打印 hello ThoughtWorks的信息，说明成功的调到了#child2中的方法。
+    好了现在我们已经了解到了如何在父组件中调用子组件的代码。在这个的基础上我们来看一下我们说的那两个钩子。
+    
+    首先我们来修改一下父组件
+    ```
+         export class AppComponent implements OnInit,AfterViewInit, AfterViewChecked {
+            @ViewChild("child1")
+            child1:ChildComponent;
+            message:string;
+                  
+            constructor() {
+                  
+            }
+                  
+            ngOnInit(): void{
+              this.child1.greeting("thougthworks");
+              this.message = 'hahaha';
+            }
+            ngAfterViewInit(): void{
+                setInterval(()=>{
+                    console.log("父组件的视图初始化完毕！")  
+                },5000)
+            }
+            ngAfterViewChecked(): void {
+                console.log("父组件的视图变更检测完毕！") 
+            }
+          } 
+    ```
+    我们在父组件上实现这两个钩子函数，这两个钩子是在组件的模版，所有的内容都被组装完成以后，组件的模版已经呈现给用户看了之后，
+    这两个方法才会被调用。同样我们需要在子组件中实现这两个钩子
+    ```
+           export class ChildComponent implements OnInit,AfterViewInit, AfterViewChecked{
+                constructor() { }
+                
+                ngOnInit() {
+                
+                }
+                
+                greeting(name:string) {
+                    console.log("hello"+name);
+                }
+                
+                ngAfterViewInit(): void{
+                    console.log("子组件的视图初始化完毕！")  
+                }
+                ngAfterViewChecked(): void {
+                    console.log("子组件的视图变更检测完毕！") 
+                }
+           } 
+    ```
+    根据控制台的输出，我们可以看到先输出了子组件初始化完毕，在输出了子组件的视图变更检测完毕！，由于父组件中有两个子组件
+    所以输出了两次，然后再是输出的父组件初始化完毕，父组件的视图变更检测完毕！。这说明父组件是等到所有的子组件完全组装好了之后
+    才能完成组装。ngAfterViewInit方法只会执行一次（这是在不触发视图更新的前提下），调方法的动作会触发变更检测机制，所以
+    ngAfterViewChecked的会被执行，变更一次会调用所有组件的ngAfterViewChecked的方法。所以会出香两次子组件变更检测完毕。
+    
+    如果我们在父组件中声明一个message变量，然后在父组件的ngAfterViewInit()方法中改变这个值，那么会出现什么现象呢？这个时候
+    angular会抛出一个异常，这是因为angualr在一个变更检测周期中，是禁止在一个视图组装好了之后再去更新这个属性。这是angular自身的一个
+    规定。ngAfterViewInit这个钩子就是在视图已经组装好了之后触发，同样我们把改变属性的语句写在ngAfterViewChecked中也会发生异常。
+    想解决这个问题，也很简单，我们需要把这个赋值语句放在另一个时间循环里面利用setTimeout函数
+    setTimeout(()=> this.message = 'hahaha',0)
+    
+    在使用ngAfterViewInit(),和ngAfterViewChecked()是需要注意的地方有：
+     + ngAfterViewInit 在ngAfterViewChecked方法之前被调用
+     + 这两个钩子都是在视图组装完毕以后调用的  
+     + 如果组件有子组件，那么只有当所有子组件的视图装完毕后 ，父组件的这两个方法才会被调用
+     + 不要在这两个钩子函数中改变你视图中所绑定的属性，想改变也要写在一个setTimeout里面
+  
 10. ngContent指令
+    下面我们会去讲ngAfterContentInit,和ngAfterContentChecked这两个钩子。在介绍这两个钩子之前，我们还要介绍angualr的一个
+    新概念叫投影。在某些情况下，我们在编写通用化的组件时，对于组件的部分内容，我们希望在调用组件时，把剩余的展示的内容传到组件中来，
+    这时我们就需要使用到投影.
+    声明一个子组件
+    ```
+        <div class ="wrapper">
+            <h2>我是子组件</h2>
+            //子组件中定义一个投影点
+            <ng-content></ng-content>
+        </div>
+    ```
+    父组件中
+     ```
+        <div class ="wrapper">
+            <h2>我是父组件</h2>
+            <app-child-component>
+                <div>我是从父组件中投影进子组件的内容</div>
+            </app-child-component>
+           
+        </div>
+     ```
+     
+     接下来，如果我们需要从父组件中传入多个内容，并显示在子组件中的不同位置时，我们应该怎么做呢？
+     
+     声明一个子组件
+     ```
+            <div class ="wrapper">
+                <ng-content select='header'></ng-content>
+                <h2>我是子组件的内容</h2>
+                //子组件中定义一个投影点
+                <ng-content select='footer'></ng-content>
+            </div>
+     ```
+     父组件中
+      ```
+            <div class ="wrapper">
+                <h2>我是父组件</h2>
+                <app-child-component>
+                    <div class='header'>我是从父组件中投影进子组件的头部内容，title是{{title}}</div>
+                    <div class='footer'>我是从父组件中投影进子组件的底部内容</div>
+                </app-child-component>
+               
+            </div>
+      ```
+      需要注意的是，投影的内容虽然是传进子组件的，但是不能使用子组件中的属性，title是来自父组件的属性。
+      
+      如何用属性绑定传入html内容?利用innerHTML来实现
+      
+      <div [innerHTML]="divContent">
+      在ts文件中定义有属性：
+      divContent='<div>ThoughtWorks</div>';
+      
+      ngContent只能绑定父组件中的属性值，而innerHTML只能绑定当前组件中的属性，所以我们应该根据情况来使用。
+      innerHTML是浏览器端的特定的属性，而ng-content是angualr有的属性，当要把应用转换成hybird开发的应用时
+      ng-content可能会更通用一些。
+      接下来会介绍与投影相关的声明周期钩子。
+     
+    
+    
 
 
 
