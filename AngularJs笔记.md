@@ -932,7 +932,7 @@
     保证同步。如果由于路由等操作，组件从dom树上移除，angualr会执行组件的销毁。
     
    <div align='center'>
-      <img src='./src/images/component.png'>
+      <img src='./src/images/angular/component.png'>
    </div>
    
    使用ng -g component name 命令生成的组件中，是默认实现了OnInit接口的，每一个钩子都是@angular/core里定义的一个接口
@@ -1130,13 +1130,13 @@
     （1）angular实现了两种变更检测策略 default策略，OnPush策略
     
        <div align='center'>
-          <img src='./src/images/component.png'>
+          <img src='./src/images/angular/component.png'>
        </div>
        如果所有的组件都使用default策略，那么不管变更发生在哪个组件上，zone.js都会检测整颗组件树。如果某个特定的组件生命自己的变更策略
        为OnPush,那么只有当这个组件的输入属性发生变化的时候，zone.js才会检测这个组件以及这个组件的子组件，还是会从跟组件开始往下检测，当遇到
        设置变更检测策略为onpush的组件时，只有当这个组件的输入属性变化时，才会检测这个组件以及其子组件。
         <div align='center'>
-          <img src='./src/images/component.png'>
+          <img src='./src/images/angular/component.png'>
         </div>
         
         我们来看一个稍微复杂点的例子，如上图所示，当孙子组件1发生变化的是时候，整个的组件树中除了子组件2，不会被检查意外，其他所有的组件都会被检查一遍
