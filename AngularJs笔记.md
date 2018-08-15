@@ -1365,7 +1365,54 @@
       innerHTML是浏览器端的特定的属性，而ng-content是angualr有的属性，当要把应用转换成hybird开发的应用时
       ng-content可能会更通用一些。
       接下来会介绍与投影相关的声明周期钩子。
-     
+      
+      ngAfterContentInit,ngAfterContentChecked是在被投影的内容组装完成后调用的。现在来写一个简单的例子:
+      
+      在父组件中：
+       ```
+           export class AppComponent implements AfterContentInit,AfterContentChecked,AfterViewInit { 
+            ngAfterContentInit(): void{
+                console.log("父组件投影内容初始化完毕！")
+            }
+            
+            ngAfterContentChecked: void{
+                console.log("父组件投影内容变更检测完毕！")
+            }
+            ngAfterViewInit: void {
+                 console.log("父组件视图内容变更检测完毕！")
+            }
+            title ='app works'
+           } 
+       ```
+       
+       在子组件中：
+       
+       ```
+         export class ChildComponent implements AfterContentInit,AfterContentChecked,AfterViewInit { 
+          ngAfterContentInit(): void{
+            console.log("子组件投影内容初始化完毕！")
+          }
+                   
+          ngAfterContentChecked: void{
+            console.log("子组件投影内容变更检测完毕！")
+          }
+      
+         }  
+       ```
+      实际的调用顺序为：
+      ```
+        父组件投影内容初始化完毕！
+        父组件投影内容变更检测完毕！
+        子组件投影内容初始化完毕！
+        子组件投影内容变更检测完毕！
+        父组件视图内容变更检测完毕！
+      ``` 
+      这说明一个组件在组装他的整个视图的时候，首先组装的是否组件投影进子组件的内容，然后组装的是子组件的内容。这两个地方都组装完毕后，再组装的是父组件
+      的内容。ngAfterContentInit() 与ngAfterViewInit()不同，前者是组件还没有初始化完毕，所以可以在方法内改变组件的属性值。
+       
+     ngOnDestory() {
+     }
+     当从一个路由跳转到另一个路由时，前一个组件会调用ngOnDestory方法。会在这个方法中清除一些资源，如定时器。
     
     
 
@@ -1374,9 +1421,80 @@
 
 ### 第七章： 表单处理
 1. 表单处理内容介绍
+  
+  angular为表单处理提供了丰富的功能。  
+  
+  模版式表单
+  
+  响应式表单
+  
+  表单验证
 2. 表单简介
+
+    纯HTML表单
+    + 显示表单项
+    + 校验用户输入
+    + 提交表单数据
 3. 模版式表单
+
+    使用模版式表单时只 能使用指令来定义数据模型。都有那些指令呢？之前介绍过如何使用NgModel来使用双向绑定。在表单中，他还有另外一个左右，表示这个
+    元素应该成为表单模型的一部分。
+    NgForm： 用来代表整个表单，在angular应用里，他会被自动的添加到form标签上。当form标签上写了post，action等属性时都会失效，因为angular已经
+    接管了这个表单。隐式的创建了一个FormGroup实例，这个类用来表示表单的数据模型，并且储存表单的数据。ngFrom可以用在form之外的标签，比如div。如果不希望
+    angular帮你处理表单需要在form标签上声明一个ngNoForm指令。#myform="NgForm"。使用(ngSubmit) ="onSubmit(myForm.value)"来处理提交事件
+    
+    NgModel：会隐式的创建一个FormControl模型，并用这个对象来存储字段的值。在form中使用ngModel时不需要使用[()]扩起来的，也不需要绑定属性。但是我们需要为ngModel的元素
+    添加一个name属性。ngmodel指令绑定的元素也可以使用本地变量来应用 #username= "ngModel"
+    
+    NgModelGroup: 代表的是表单的一部分，他允许你将表单字段组织在一起，形成更清晰的层次关系。与NgForm指令类型，NgModelGroup指令也会创建一个FormGroup对象。用一个div包裹
+    两个input元素，并在div上使用NgModelGroup ="userInfo"声明，这样FormGroup中的数据会多一个层级嵌套
+    
+    三部曲：
+    + 使用NgForm声明表单为angular表单
+    + 使用ngModel，绑定input元素中的数据
+    + 使用NgModeGroup 组织表单字段值
+    
 4. 响应式表单
+    首先我们需要一个编码实现一个数据模型，然后利用指令将html链接到这个数据模型上。如何创建一个模型，数据模型是一个用来表示表单数据的数据结构，简称模型。它有定义在
+    angular/forms模块中三个类组成：
+    
+    FormControl:他是构成表单的基本单位，通常情况下用来代表一个input元素，FormControl保存着与当前元素关联的值，以及元素的校验状态，还有元素是否被修改过等信息。
+    
+    username: FormControl = new FormControl('a');
+    FormControl接收一个参数作为input元素的初始值，当我们将这个属性与input元素连接时，input元素的初始值就是a
+    
+    FormGroup： 既可以用于代表表单的一部分也可以代表整个表单，他是多个FormControl的集合，FormGroup将多个FormControl的值聚合在一起。后面讲表单验证的时候
+    如果一个formcontrol的值是无效的那么整个formgroup的值都是无效的。例如我们在验证日期的时候，有一个起始日期和一个结束日期。可以把这两个input放在一个group里面
+    如果一个不过，都会显示错误信息。FormGroup接收一个对象作为参数：
+    ```
+        formGroup:FormGroup = new FormGroup({
+            start: new FormControl('a'),
+            end: new FormControl('b')
+        })
+    ```
+    FormArray: 是显示一系列相同的input元素，例如email
+    ```
+            emails:FormArray = new FormArray([
+                new FormControl('aaaa@qq.com'),
+                new FormControl('bbbb@qq.com'),
+                new FormControl('ccc@qq.com'),
+            ])
+    ```
+
+    
+    FormArray中的formcontrol是没有一个相关的key的，只能通过index来访问
+    
++ 响应式表单中用到的指令，响应式表单中使用一组完全与模版表单中不一样的指令，这些指令主要来自与ReactiveFormsModule模块中。
+    
+    类名===================指令
+    
+    FormGroup===========formGroup==========formGroupName
+    FormControl===========formControl==========formControlName
+    FormArray===========     ==========formArrayName
+    
+    响应式表单只能在代码中操作，模版式表单只能在模版中操作，响应式表单不能够使用本地变量引用到表单的对象。angualr中是故意这么
+    实现的，响应式表单本身就已经是在对象中了。
+    formControl需要用属性绑定语法，而formControlName使用字符串。所以在FormGroup中只能使用fromControlName
 5. 响应式表单重构
 6. 表单校验
 7. 状态字段
