@@ -1336,10 +1336,10 @@
      声明一个子组件
      ```
             <div class ="wrapper">
-                <ng-content select='header'></ng-content>
+                <ng-content select='.header'></ng-content>
                 <h2>我是子组件的内容</h2>
                 //子组件中定义一个投影点
-                <ng-content select='footer'></ng-content>
+                <ng-content select='.footer'></ng-content>
             </div>
      ```
      父组件中
