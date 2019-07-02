@@ -247,6 +247,3 @@
       (2). 使用命令的方式执行（如果不加--global，则是在当前git仓库做的更改）
       
          git config --global alias.co checkout 
-      4444444
-         
-       123
