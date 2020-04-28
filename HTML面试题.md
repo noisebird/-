@@ -322,5 +322,258 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 ###     17. react工作的原理，以及react的思想？
 ###     18. ajax是一个单独的模块，知识jquery封装了这个模块而已
 ###     19. 移动端开发、和目前主流的框架的掌握情况是本人的弱势项。
-###     20. 你所理解的全栈的概念有哪些？
-###     21. 对于code review了解有多少？
+
+### HTML篇
+
+### CSS篇
+   + 浏览器加载css有几种方式
+    
+        (1) 通过link标签引入，外部样式
+        
+        (2) 通过style标签引入，内部样式
+        
+        (3) 通过style标签使用@import url() 引入，外部样式
+        
+        (4) 行内样式
+        
+        这四种方式的生效顺序，取决于 style标签放在link标签之前还是之后， 行内样式的优先级最高
+        
+        <link> 标签中的rel属性的作用，link标签在html中时不闭合的，在XHTML中是闭合的
+        
+            rel="stylesheet" type="text/css" 调用外部样式表，这里的src可以是本地的css也可以是远端的css文件
+            
+            rel="shortcut icon" type="images/x-icon" 指定网页的标题栏,地址栏,收藏栏小图标，IE中只兼容为.ico的图片
+            rel="icon" type="images/png"
+            rel="nofollow" 禁止外部链接爬取网站
+   + 盒模型有哪两种
+   
+     `IE盒模型（border-box, width包含border + padding + content）和 w3c盒模型（content-box,不包含border+padding）`
+   + flex布局、table布局
+   + css哪些属性可以继承
+   + css属性的优先级的关系
+   + px、em、rem的区别以及应用场景
+        px: 是一个虚拟长度单位，是计算机系统的数字化图像长度单位，如果px要换算成物理长度，需要指定精度DPI(Dots Per Inch，每英寸像素数)，在扫描打印时一般都有DPI可选。
+        em: 默认情况下 1em = 16px，但是如果在html元素上设置font-size: 62.5%; 那么1em = 10 px; em是相对于父元素， 典型的应用场景：段落缩进 父元素设置font-size: 12; text-indent: 2em;
+        rem: 是相对于html元素的大小来设置的 响应式布局中的缩放
+   + sass和less语法
+   + 如何优化css
+   + bootstrap样式
+   + 如何使用媒体查询？
+        
+        准备工作1：设置Meta标签
+        
+        ``` 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        ```
+        + width = device-width：宽度等于当前设备的宽度
+        
+        + initial-scale：初始的缩放比例（默认设置为1.0）  
+        
+        + minimum-scale：允许用户缩放到的最小比例（默认设置为1.0）    
+        
+        + maximum-scale：允许用户缩放到的最大比例（默认设置为1.0）   
+        
+        + user-scalable：用户是否可以手动缩放（默认设置为no，因为我们不希望用户放大缩小页面） 
+        
+        准备工作2：加载兼容文件JS
+        
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;因为IE8既不支持HTML5也不支持CSS3 Media，所以我们需要加载两个JS文件，来保证我们的代码实现兼容效果：
+        ```
+         <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+         <![endif]-->
+        ```
+        
+        准备工作3：设置IE渲染方式默认为最高(这部分可以选择添加也可以不添加)
+            
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现在有很多人的IE浏览器都升级到IE9以上了，所以这个时候就有又很多诡异的事情发生了，例如现在是IE9的浏览器，但是浏览器的文档模式却是IE8。
+        为了防止这种情况，我们需要下面这段代码来让IE的文档模式永远都是最新的：
+        ```
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        ```
+        也可以写成如下形式：
+        ```
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1">
+        ```
+        如果有的用户电脑里面装了这个Google Chrome Frame的插件，就可以让电脑里面的IE9之下的浏览器中的都可以使用Webkit引擎及V8引擎进行排版及运算，无比给力，不过如果用户没装这个插件，那这段代码就会让IE以最高的文档模式展现效果。这段代码我还是建议你们用上，不过不用也是可以的。
+        
+        CSS3的media语法
+        ```
+        @media screen and (min-width: 640px) and (max-width: 960px){
+            body{
+                background: #000;
+            }
+        }
+        ```
+        当屏幕宽度大于640px小于960px时会使用上面这段样式
+        常用到的属性：
+            width: 屏幕宽度 可以和min-,max-前缀一起使用
+            height: 屏幕高度 可以和min-,max-前缀一起使用
+            device-width: 设备宽度 可以和min-,max-前缀一起使用
+            device-height: 设备高度 可以和min-,max-前缀一起使用
+            orientation: 屏幕方向是横屏还是竖屏，portrait（纵向）、landscape（横向）
+            resolution: 媒体设备的分辨率 可以和min-,max-前缀一起使用
+        常用到的操作符
+            not and
+   + css hack是什么？
+   + css 2D转换 3D转换
+   + 如何实现三角形
+        ```
+        .trigle {
+        		box-sizing: content-box;
+        		width: 0px;
+        		height: 0px;
+        		background: blue;
+        		border-right: 50px solid transparent;
+        		border-left: 50px solid transparent;
+        		border-top: 50px solid transparent;
+        		border-bottom: 50px solid orange;
+        	}
+        
+        ```
+   + 阴影 渐变 动画
+   + 条形阴影
+   + css覆盖规则
+   + 浏览器是如何根据选择器查找到对应元素的
+   + css垂直居中的几种实现方式
+   + 经典三栏布局
+   
+   + white-space、word-break和word-wrap（overflow-wrap）的区别
+     + white-space 控制元素中文本的 空格的保留与合并、换行符的生效与失效、自动换行的生效与失效、<Br> &nbsp的失效与生效:
+        ```
+                    换行符        空格       自动换行     br和&nbsp
+         normal:    不生效        合并        不生效        生效
+         nowrap:    不生效        合并        不生效        生效
+            pre:    生效         保留         不生效        生效
+       pre-wrap:   生效         保留         生效         生效
+       pre-line:   生效         合并         生效         生效
+        ```
+     + word-break 控制单词的换行 normal | break-all, break-all 第一行显示不下单词的字符 会折到下一行显示
+     + word-wrap  控制单词的折行 当单词在当前行显示不下时， 会折行显示，如果折行之后还是显示不下，normal: 会超出当前文本框显示，break-word: 会将单词折行
+   
+### js基础篇
+   + File API
+   + 如何实现防抖函数
+   ```
+   const debounce = (func, wait) => {
+       let timeId;
+       return (...args) => {
+           clearTimeout(timeId);
+           timeId = setTimeout(() => {
+               func.apply(this, args);
+           }, wait);
+       }
+   }
+   const searchDebounce = debounce((query) => {
+       console.log(`Results for "${query}"`);
+   }, 500);
+   document.getElementById("searchInput").addEventListener("input", function(event) {
+       searchDebounce(event.target.value);
+   ```
+   + data URL
+   
+   我们习惯的 URL 的全称是统一资源定位符（uniform resource locator），它是由一个“协议”和一个“地址”组成。协议告诉浏览器或者程序用何种方式去获取这个资源，地址告诉程序在哪里找到这个资源，每个地址都能唯一定位一个公开资源（比如图片、HTML、JavaScript 等）或非公开资源
+   
+   Data URI 从本质上来说并不是 URL。在1998年的RFC 2397中第一次定义了 Data URI：
+   
+   > 本文档定义了一个新的URL 协议（我觉得这里有点误用，应该是 URI 协议，因为跟蒂姆·伯纳斯·李的RC 2396有冲突）。它允许（文档）直接使用一小段数据作为“即时数据”，而不是之前那样必须引用外部资源。
+   
+   文档中是这么定义 data URL的格式的：
+   ```
+   data:[<mediatype>][;base64],<data>
+   ```
+   在这种格式中，data:就是 URI 的协议，表明这是一个 data URI。MediaType 可能是image/png之类的，如果不填，默认是text/plain。
+   
+   ```
+   <IMG SRC="data:image/gif;base64,R0lGODdhMAAwAPAAAAAAAP///ywAAAAAMAAwAAAC8IyPqcvt3wCcDkiLc7C0qwyGHhSWpjQu5yqmCYsapyuvUUlvONmOZtfzgFzByTB10QgxOR0TqBQejhRNzOfkVJ+5YiUqrXF5Y5lKh/DeuNcP5yLWGsEbtLiOSpa/TPg7JpJHxyendzWTBfX0cxOnKPjgBzi4diinWGdkF8kjdfnycQZXZeYGejmJlZeGl9i2icVqaNVailT6F5iJ90m6mvuTS4OK05M0vDk0Q4XUtwvKOzrcd3iq9uisF81M1OIcR7lEewwcLp7tuNNkM3uNna3F2JQFo97Vriy/Xl4/f1cf5VWzXyym7PHhhx4dbgYKAAA7" ALT="Larry">
+   ```
+   
+   性能神器还是弃之可惜的鸡肋？
+   
+   data URL能减少前端资源的请求数量，但这个就一定能达到性能优化的效果吗？ 其实并不是的，这里有几个误区，需要声明一下：
+   <bold> 误区一：减少请求等于优化性能？</bold>
+   
+   &nbsp;&nbsp;&nbsp;&nbsp;让我们来回顾一下，页面的组成由若干个HTML，CSS，JavaScript以及图片资源组成，对于前端开发来说，减少一个资源请求，就能够优化页面，这句话其实本事是没有任何毛病的，但是有一个前提是，减少请求不能增加任何有负作用的相关代码。显然data URL就是这么一个有副作用的代码，具体表现形式在 由于url中的base64编码会很长，无形之中增大了html和css文件的体积。我们都知道，html，css文件的大小是能够影响 HTML DOM树和CSS DOM树的生成的，从而影响到页面的渲染。 
+   
+   误区二： Base64 能获益于 Gzip 压缩？
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; html，css文件变大了？ 有的同学 就会说了，现在不都是可以用gzip压缩了吗，文件越大，压缩效果越明显？ 其实并不是这样的，Gzip是在Web端最常用的一种压缩文本的方法。
+   > Gzip压缩算法分两步。第一步，采用LZ77算法的一个变种替换字符串，第二步，使用Huffman树来储存出现的位置和长度。
+   
+   简单的说，Gzip把原文本中多次出现的相同字符串记为一个“标记”，所以文本中重复出现的字符串越多，压缩率越高。
+   
+   HTML 中重复出现大量的 HTML 标签以及类名等，CSS中重复出现大量的属性，JavaScript 中重复的函数调用等（即使经过混淆）。因此 HTML、CSS、JavaScript 的 Gzip 压缩率都是很高的，最高可达到90%。
+   
+   而图片经过Base64转化后变成的文本是无规律的，所以在Gzip中不能达到较高的压缩率。
+   
+   + 前端性能优化 - Gzip
+   
+   静态压缩
+   
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;静态压缩，顾名思义使我们在打包前端项目时，直接将文件打包成gzip文件，然后在服务器上添加相关gzip的配置后。前端请求资源时，就能直接请求gzip文件。
+   ```
+   // webpack中打包成gzip文件的配置
+   const CompressionPlugin = require('compression-webpack-plugin');
+   
+   {
+    plugins: [
+        new CompressionPlugin({
+              algorithm: "gzip",
+              test: /\.(js|html|css)$/,
+              // 文件大小大于多少时，才进行压缩
+              // threshold: 0,
+              // 最小压缩比
+              minRatio: 0.8,
+              deleteOriginalAssets: true,
+            }),
+    ]
+   }
+   ```
+   
+   服务器上的相关配置（nginx）：
+   在http、server、location下加以下代码，详情点击nginx文档。
+   ```
+   gzip_static on;
+   gzip_http_version   1.1;
+   gzip_proxied        expired no-cache no-store private auth;
+   gzip_disable        "MSIE [1-6]\.";
+   gzip_vary           on;
+   ```
+   最后 nginx -s reload 重启。
+   
+   动态压缩
+   
+   &nbsp;&nbsp;&nbsp;&nbsp; 动态压缩，就是在请求资源的时候，服务器先进行gzip压缩文件，然后再返回给前端，这样做的不好之处是，会占用服务器的系统资源来进行压缩操作。压缩过程占用cpu的资源，压缩比越高cpu占用越高，所以请配置合适的压缩比。
+   ```
+   gzip             on;
+   gzip_min_length  1000;
+   gzip_proxied     expired no-cache no-store private auth;
+   gzip_types       text/plain application/xml;
+   ```
+
+### ES篇
+
+
+### angular篇
+   + MVVM框架的理解
+   + angular中重要概念
+   + angular的加载
+   + angular拦截器
+   + angular实现装饰器
+   + angular动态创建组件
+   + angular模块懒加载
+   + angular resolve
+   + websocket
+   + rxjs
+   + angular表单
+   + 文件上传和文件下载
+   + 路由缓存
+   + 循环依赖
+   + angular编译
+
+### react篇
+
+### react-native篇
+
+### 项目构建篇
+    1. requireJs + artTemplate + gulp构建项目
