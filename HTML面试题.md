@@ -550,7 +550,77 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
    gzip_proxied     expired no-cache no-store private auth;
    gzip_types       text/plain application/xml;
    ```
-
+   
+   + js 下载文件
+    下载文件 我们用的最多的可能是用 a 标签来下载，直接将获取文件流的路径写在 a 标签的href属性中。但是我们经常会有这样的需求，需要更改下载的文件名，文件可能可能需要js动态计算得出。所以，这个时候通过js 的http请求来下载文件就很有必要。
+    
+     以下使用blob的方式来保存文件, 使用URL.createObjectURL()来创建文件链接
+    
+     语法：objectURL = URL.createObjectURL(blob || file);
+        
+      参数:
+      
+      File对象或者Blob对象
+      
+      这里大概说下File对象和Blob对象:
+      
+      File对象,就是一个文件,比如我用input type="file"标签来上传文件,那么里面的每个文件都是一个File对象.
+      
+      Blob对象,就是二进制数据,比如通过new Blob()创建的对象就是Blob对象.又比如,在XMLHttpRequest里,如果指定responseType为blob,那么得到的返回值也是一个blob对象.
+    
+    ```
+    
+    function download(href, fileName, extension = '') {
+      const a = document.createElement('a');
+      a.href = href;
+      a.download = fileName + extension ;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+    
+    const exportOnDifferentBrowsers = (arrayBuffer: ArrayBuffer, contentType: string, fileName: string, extension: string = '') => {
+      const blob = new Blob([arrayBuffer], { type: contentType });
+      // IE 
+      if (window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(blob, fileName + extension);
+      } else {
+        download(URL.createObjectURL(blob), fileName, extension);
+      }
+    };
+    
+    ```
+    
+   （1）什么是 URL.createObjectURL()
+   
+   > URL.createObjectURL() 静态方法会创建一个 DOMString，其中包含一个表示参数中给出的对象的URL。这个 URL 的生命周期和创建它的窗口中的 document 绑定。这个新的URL 对象表示指定的 File 对象或 Blob 对象。
+          
+   简单的理解一下就是将一个file或Blob类型的对象转为UTF-16的字符串，并保存在当前操作的document下。
+   
+   （2）URL.createObjectURL()与FileReader.readAsDataURL()的区别
+       
+   + 返回值 
+    
+     + FileReader.readAsDataURL(file)可以得到一段base64的字符串。URL.createObjectURL(file)可以得到当前文件的一个内存URL。
+   + 内存使用 
+     + FileReader.readAsDataURL(file)的返回值是转化后的超长base64字符串(长度与要解析的文件大小正相关)。
+       URL.createObjectURL(file)的返回值虽然是字符串，但是是一个url地址。
+   + 内存清理 
+     + FileReader.readAsDataURL(file)依照JS垃圾回收机制自动从内存中清理。
+       URL.createObjectURL(file)存在于当前doucment内，清除方式只有unload()事件或revokeObjectURL()手动清除 。
+   + 执行机制
+     + FileReader.readAsDataURL(file)通过回调的形式返回，异步执行。
+       URL.createObjectURL(file)直接返回，同步执行。
+   + 兼容性
+     + 兼容性兼容IE10以上，其他浏览器均支持。
+     
+   （3）URL.revokeObjectURL
+     
+   window.URL.revokeObjectURL(objectURL)
+    
+   URL.revokeObjectURL()方法会释放一个通过URL.createObjectURL()创建的对象URL. 当你要已经用过了这个对象URL,然后要让浏览器知道这个URL已经不再需要指向对应的文件的时候,就需要调用这个方法.
+  具体的意思就是说,一个对象URL,使用这个url是可以访问到指定的文件的,但是我可能只需要访问一次,一旦已经访问到了,这个对象URL就不再需要了,就被释放掉,被释放掉以后,这个对象URL就不再指向指定的文件了.
+   比如一张图片,我创建了一个对象URL,然后通过这个对象URL,我页面里加载了这张图.既然已经被加载,并且不需要再次加载这张图,那我就把这个对象URL释放,然后这个URL就不再指向这张图了.
 ### ES篇
 
 
@@ -572,7 +642,66 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
    + angular编译
 
 ### react篇
+   > 什么是react框架？<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; React 是一个起源于 Facebook 的内部项目，因为当时 Facebook 对于市场上所有的 JavaScript MVC 框架都不太满意，所以索性就自己写了一套，用来架设 Instagram。做出来之后，发现这套东西还蛮好用的，于是就在 2013 年 5 月开源了。
 
+   在这里我们需要稍微注意一下 库(Library) 和 框架(Framework) 的区别，React 本身是一个用于构建用户界面的 JavaScript 库，而我们平时所说的 React 框架其实是指的是 React/ React-router 和 React-redux 的结合体，库和框架的本质区别体现在于控制权：
+   
+   ![图片alt]('', 图片title'')
+   <img src='./src/html面试题/library.jpg' >
+   
+   + 「库」是一个封装好的特定的集合，提供给开发者使用，而且是特定于某一方面的集合（方法和函数），库没有控制权，控制权完全在于使用者本身；
+   
+   + 「框架」顾名思义是一套架构，会基于自身的特点向用户提供一套比较完整的解决方案，如果使用者选定了一套框架，那么就需要根据框架本身做出一定的适应。
+   
+   
+   DOM 的概念
+   
+   dom（Document Object Model），即文档对象模型。它是一种跨平台、独立于编程语言的API。它把HTML、XHTML、XML文档都当做成一种树结构，而每个节点视为对象，这些对象可以被编程语言操作，进而改变文档的结构，映射到文档的显示。DOM 最开始的时候是和 JavaScript 交织在一起的，只是后来它们最终演变成了两个独立的实体。DOM 被设计成与特定编程语言相独立，尽管绝大部分时候我们都是使用 JavaScript 来操作，但其实其他的语言一样可以（如 Python）。
+
+   <bold>虚拟dom</bold>
+   
+   虚拟DOM的本质就是用 JS 对象来模拟出我们真实的 DOM 树，它的算法大致如下：
+   
+   1. 用 JavaScript 对象映射形成 DOM 树的结构，然后用这个树构建一个真正的 DOM 树，插到文档当中；
+   
+   2. 当状态变更的时候，重新构造一棵新的对象树，然后用新的树和旧的树进行比较（Diff 算法），记录两棵树差异；
+   3. 把第二步中所记录的差异应用到步骤一所构建的真正的 DOM 树上，视图就更新。
+   
+   
+   虚拟 DOM 和真实 DOM 的区别
+   
+   1 改变多个状态，影响多个节点布局时，只是频繁的修改了内存中的 JS 对象，然后一次性比较并修改真实 DOM 中需要改的部分，最后在真实 DOM 中进行排版与重绘，减少过多 DOM 节点排版与重绘损耗；
+   
+   2 真实 DOM 频繁排版与重绘的效率是相当低的；
+   
+   3 虚拟 DOM 有效降低大面积（真实 DOM 节点）的重绘与排版，因为最终与真实 DOM 比较差异，可以只渲染局部（同2）；
+   
+   使用虚拟DOM的损耗计算：
+   
+   总损耗 = 虚拟DOM增删改 + （与Diff算法效率有关）真实DOM差异增删改 + （较少的节点）排版与重绘
+   
+   直接使用真实DOM的损耗计算：
+   
+   总损耗 = 真实DOM完全增删改 + （可能较多的节点）排版与重绘
+   
+   diff算法
+   
+   虚拟 DOM 的核心在于 Diff，它自动帮你计算那些应该调整的，然后只修改应该被调整的区域，省下的不是运行速度这种 "小速度"，而是开发速度/ 维护速度/ 逻辑简练程度等 "总体速度"。
+   
+   但虚拟 DOM 快也是在相对条件下的，这里引用 @尤雨溪大大在知乎问题《网上都说操作真实 DOM 慢，但测试结果却比 React 更快，为什么？》上回答的一句话吧：
+    
+   >不要天真地以为 Virtual DOM 就是快，diff 不是免费的，batching 么 MVVM 也能做，而且最终 patch 的时候还不是要用原生 API。在我看来 Virtual DOM 真正的价值从来都不是性能，而是它 1) 为函数式的 UI 编程方式打开了大门；2) 可以渲染到 DOM 以外的 backend，比如 ReactNative。
+   
+   Diff 大致可以分为三种类型：
+   
+   Tree Diff： 新旧两棵 DOM 树，逐层对比的过程，就是 Tree Diff，当整颗DOM逐层对比完毕，则所有需要被按需更新的元素，必然能够找到；
+   
+   Component Diff： 在进行 Tree Diff 的时候，每一层中，组件级别的对比，叫做 Component Diff：
+   如果对比前后，组件的类型相同，则暂时认为此组件不需要被更新；
+   如果对比前后，组件类型不同，则需要移除旧组件，创建新组件，并追加到页面上；
+   
+   Element Diff： 在进行组件对比的时候，如果两个组件类型相同，则需要进行元素级别的对比，这叫做 Element Diff；
 ### react-native篇
 
 ### 项目构建篇
