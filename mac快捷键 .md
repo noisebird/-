@@ -219,4 +219,4 @@ Control ⌃       Caps Lock ⇪         Fn
     
     这应该是某种情况下导致/usr/local/mysql/data的宿主发生了改变。
     
-    解决方法：打开终端运行 sudo chown -R mysql /usr/local/mysql/data 即可。
+    解决方法：打开终端运行 sudo chown -R mysql /usr/local/mysql/data 即可
