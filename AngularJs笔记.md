@@ -1,7 +1,7 @@
 ### AngularJs
     
   简介：
-  AngularJs是谷歌发布的一个前段框架
+  AngularJs是谷歌发布的一个前段框架1
 1. AngularJs程序架构（组件，指令，服务可以构成一个模块）
 
 <div align='center'>
