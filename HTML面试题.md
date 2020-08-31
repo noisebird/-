@@ -625,8 +625,48 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
 
 
 ### angular篇
+   + 什么是Angular框架？
+     
+     Angular是一个基于HTML和TypeScript构建客户端应用的MVVM框架。
+     
    + MVVM框架的理解
+     使用过Jquery开发过的，都知道，当数据变化时，我们想要改变用户界面，必须要手动的去操作dom元素，将对应的视图部分的值重新渲染。与Jquery操作数据的方式不同的是，MVVM提供的新的设计思想，即数据的变化会自动的去触发视图的更新，不需要我们
+     过多的去操作DOM，框架自动帮我们完成。M - Model ， V - View， VM: ViewModel。 我们只需要按照框架的语法建立好视图与模型的绑定关系，当数据变化时框架会自动帮我们去更新视图
+   
    + angular中重要概念
+    
+      > 模块（NgModule）
+      
+      模块是angular的基本构造块， 它为组件提供了编译的上下文环境。它专注于某个应用领域、某个工作流或一组紧密相关的能力。
+      NgModule 可以将其组件和一组相关代码（如服务）关联起来，形成功能单元。Angular应用就是有若干模块定义出来的。对于Angular应用来说，
+      至少会有一个用来引导应用的根模块（AppModule），应用的根模块之所以叫根模块，是因为它可以包含任意深度的层次化子模块。与Es模块一样Angular的模块中也可以导入其他模块的功能
+      
+     （1）如何在Angular中定义一个模块
+     
+        模块声明成一个带有 @NgModule() 装饰器的类。@NgModule() 装饰器是一个函数，它接受一个元数据对象，该对象的属性用来描述这个模块。其中最重要的属性如下：
+        
+        + declarations（可声明对象表） —— 那些属于本 NgModule 的组件、指令、管道。
+        + exports（导出表） —— 那些能在其它模块的组件模板中使用的可声明对象的子集。
+        + imports（导入表） —— 那些导出了本模块中的组件模板所需的类的其它模块。
+        + providers —— 本模块向全局服务中贡献的那些服务的创建器。 这些服务能被本应用中的任何部分使用。（你也可以在组件级别指定服务提供者，这通常是首选方式。）
+        + bootstrap —— 应用的主视图，称为根组件。它是应用中所有其它视图的宿主。只有根模块才应该设置这个 bootstrap 属性。
+        + entryComponents - 入口组件。路由中引入的组件都会默认添加到entryComponents中去，动态引入的组件必须放到这个里面去 
+     
+     （2）Angular模块中的一些常见的问题
+        1. BrowserModule和CommonModule的区别？
+        
+            所有要在浏览器中使用的应用的根模块（AppModule）都应该从 @angular/platform-browser 中导入 BrowserModule。
+            BrowserModule 提供了启动和运行浏览器应用的那些基本的服务提供者。BrowserModule 还从 @angular/common 中重新导出了 CommonModule，这意味着 AppModule 中的组件也同样可以访问那些每个应用都需要的 Angular 指令，如 NgIf 和 NgFor。
+            在其它任何模块中都不要导入BrowserModule。 特性模块和惰性加载模块应该改成导入 CommonModule。
+            特性模块中导入 CommonModule 可以让它能用在任何目标平台上，不仅是浏览器。
+         
+        2. 在Angular中两次导入同一个模块会发生什么？
+            
+            不会发生任何问题。当三个模块全都导入模块'A'时，Angular 只会在首次遇到时加载一次模块'A'。无论 A 出现在所导入模块的
+            哪个层级，都会如此。 如果模块'B'导入模块'A'、模块'C'导入模块'B'，模块'D'导入 [C, B, A]，那么'D'会触发
+            模块'C'的加载，'C'会触发'B'的加载，而'B'会加载'A'。 当 Angular 在'D'中想要获取'B'和'A'时，这两个模块
+            已经被缓存过了，可以立即使用。Angular中不允许出现循环依赖， 所以不要让模块'A'导入模块'B'，而模块'B'又导入模块'A'
+      > 组件    
    + angular的加载
    + angular拦截器
    + angular实现装饰器
@@ -703,6 +743,9 @@ Web 应用程序的时候能够有流畅的使用体验。可以预加载整个�
    
    Element Diff： 在进行组件对比的时候，如果两个组件类型相同，则需要进行元素级别的对比，这叫做 Element Diff；
 ### react-native篇
+
+
+
 
 ### 项目构建篇
     1. requireJs + artTemplate + gulp构建项目
